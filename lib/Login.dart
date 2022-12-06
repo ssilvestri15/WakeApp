@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -15,6 +16,11 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Color.fromRGBO(255, 233, 154, 1),
+      systemNavigationBarColor: Color.fromRGBO(255, 233, 154, 1),
+      systemNavigationBarDividerColor: Color.fromRGBO(255, 233, 154, 1),
+    ));
     return Scaffold(
       backgroundColor: const Color.fromRGBO(255, 233, 154, 1),
       body: SingleChildScrollView(
@@ -65,45 +71,45 @@ class _LoginState extends State<Login> {
                     var username = _emailController.text;
                     var password = _passwordController.text;
 
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        content: Text('Username: $username \nPassword: $password'),
-                      ),
-                    );
-
-                  },
-                    style: ElevatedButton.styleFrom(
-                      shape: const StadiumBorder(),
-                      minimumSize: const Size(150, 40),
-                      backgroundColor: const Color.fromRGBO(81, 48, 14, 1),
-                    ),
-                    child: const Text('Accedi',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 23,
-                      ),
-                    ),
-                  ),
-                  TextButton(
-                      onPressed: () {
-                      },
-                      child: const Text(
-                        'Password dimenticata',
-                        style: TextStyle(
-                          decoration: TextDecoration.underline,
-                          color: Color.fromRGBO(81, 48, 14, 1),
-                          fontSize: 15,
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          content: Text('Username: $username \nPassword: $password'),
                         ),
-                      )),
-                ],
-              ),
-            )
-          ],
+                      );
+
+                    },
+                      style: ElevatedButton.styleFrom(
+                        shape: const StadiumBorder(),
+                        minimumSize: const Size(150, 40),
+                        backgroundColor: const Color.fromRGBO(81, 48, 14, 1),
+                      ),
+                      child: const Text('Accedi',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 23,
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                        onPressed: () {
+                        },
+                        child: const Text(
+                          'Password dimenticata',
+                          style: TextStyle(
+                            decoration: TextDecoration.underline,
+                            color: Color.fromRGBO(81, 48, 14, 1),
+                            fontSize: 15,
+                          ),
+                        )),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
-      ),
-    );
+      );
   }
 
 }
