@@ -1,0 +1,24 @@
+/auth
+  /login (POST=
+	---> username/password (tramite json)
+	<--- token (Token Bearer token, senza scadenza)
+
+
+/user (get, Auth token)
+	<---- profilo utente
+
+/user
+  /video (post, auth, id_utente, data, faccina, nome_video)
+  /video (get, auth -> admin, id_utente)
+  /text (get)
+	<---- text
+  /audio (post, auth, text, id_utente, data, faccina)
+  /audio (get, auth -> admin, id_utente)
+  
+
+/user
+  /set (post, auth -> admin, id_utente, dati_sensori, data)
+
+
+/ia (post, auth, audio/video, data, id_utente, dati_sensori)
+	<--- lista_emozioni_probabili
