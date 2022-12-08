@@ -5,32 +5,21 @@ from dotenv import load_dotenv
 from flask import Flask, request
 from flask_restful import Resource, Api
 from flask_jwt_extended import JWTManager, create_access_token
+from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
 from utils import allowed_file, verify_token_and_get_user
 
 load_dotenv(".flaskenv") #prende variabili da .flaskdev
 
 app = Flask(__name__)
-app.config['JWT_SECRET_KEY'] = 'super-secret'  # Change on production
+bcrypt = Bcrypt(app)
+app.config['JWT_SECRET_KEY'] = os.environ.get("JWT_SECRET_KEY")  # Change on production
 jwt = JWTManager(app)
 url = os.environ.get("DATABASE_URL")  #estrae url da env
 video_folder = os.environ.get("UPLOAD_FOLDER")  #estrae url da env
 connection = psycopg2.connect(url)
 
 api = Api(app)
-
-class Test(Resource):
-    def get(self):
-        return "GET successfull", 200
-    def post(self):
-            data = request.get_json()
-            name = data["name"]
-            with connection:
-                with connection.cursor() as cursor:
-                    #cursor.execute(query.CREATE_ROOMS_TABLE)
-                    #cursor.execute(query.INSERT_ROOM_RETURN_ID, (name,))
-                    room_id = cursor.fetchone()[0]
-                    return {"id": room_id, "message": f"Room {name} created."}, 201
         
 class Video(Resource):
     def post(self):
@@ -62,11 +51,14 @@ class Register(Resource):
                 user = cursor.fetchall()
                 print(user)
                 if user:
+                    cursor.close()
                     return {'message' : 'User already exist'}, 400
                 else:
-                    cursor.execute(query.INSERT_USER_RETURN_ID, (email, password, 0))
+                    encrypted = bcrypt.generate_password_hash(password).decode('utf-8')
+                    cursor.execute(query.INSERT_USER_RETURN_ID, (email, encrypted, 0))
                     user_id = cursor.fetchone()[0]
-                    token = create_access_token(identity=email)
+                    token = create_access_token(identity=email, )
+                    cursor.close()
                     return {"id": user_id, "message": f"Room {email}:{password} created.", "token": token}, 201
 
 
@@ -78,9 +70,12 @@ class Login(Resource):
         with connection:
             with connection.cursor() as cursor:
                 cursor.execute(query.CREATE_USER_TABLE)
-                cursor.execute(query.LOGIN, (email, password))
+                cursor.execute(query.LOGIN, (email,))
                 user = cursor.fetchall()
                 if user:
+                    if not bcrypt.check_password_hash(user[0][2], password):
+                        return {'message' : 'La password non è valida'}, 400
+
                     token = create_access_token(identity=user[0][1], expires_delta=False)
                     return {"id": user[0][0], "message": f"Login successful", "token": token}, 201
                 else:
@@ -129,7 +124,6 @@ class Api(Resource):
 
 
 api.add_resource(Api, "/api") #test endpoint
-api.add_resource(Test, "/api/test") #test endpoint
 api.add_resource(Auth, "/api/auth") #endpoint to Auth
 api.add_resource(Register, "/api/auth/register") #endpoint to Auth
 api.add_resource(Login, "/api/auth/login") #endpoint to Auth
