@@ -1,30 +1,12 @@
-import os #The OS module in Python provides functions for creating and removing a directory (folder) etc
-import psycopg2 #to use postgresql
-from dotenv import load_dotenv #to use .flaskenv
+import os
+import psycopg2
+import query
+from dotenv import load_dotenv
 from flask import Flask, request
-from flask_restful import Resource, Api, reqparse
-from flask_jwt_extended import JWTManager, jwt_required, create_access_token, decode_token
+from flask_restful import Resource, Api
+from flask_jwt_extended import JWTManager, create_access_token
 from werkzeug.utils import secure_filename
-import pandas as pd #Analizza i dati
-import ast
-
-CREATE_USER_TABLE = (
-    "CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, email TEXT, password TEXT, type integer);"
-)
-
-INSERT_USER_RETURN_ID = "INSERT INTO users (email, password, type) VALUES (%s, %s, %d) RETURNING id;"
-
-CHECK_USER_EXIST_BY_EMAIL = "SELECT * FROM users WHERE email=(%s);"
-
-CHECK_USER_EXIST_BY_ID = "SELECT * FROM users WHERE id=(%s);"
-
-
-LOGIN = "SELECT * FROM users WHERE email=(%s) AND password=(%s);"
-
-ALLOWED_EXTENSIONS = set(['mp4', 'mov', 'avi', 'flv', 'mkv', 'webm'])
-
-def allowed_file(filename):
-	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+from utils import allowed_file, verify_token_and_get_user
 
 load_dotenv(".flaskenv") #prende variabili da .flaskdev
 
@@ -45,8 +27,8 @@ class Test(Resource):
             name = data["name"]
             with connection:
                 with connection.cursor() as cursor:
-                    #cursor.execute(CREATE_ROOMS_TABLE)
-                    #cursor.execute(INSERT_ROOM_RETURN_ID, (name,))
+                    #cursor.execute(query.CREATE_ROOMS_TABLE)
+                    #cursor.execute(query.INSERT_ROOM_RETURN_ID, (name,))
                     room_id = cursor.fetchone()[0]
                     return {"id": room_id, "message": f"Room {name} created."}, 201
         
@@ -75,17 +57,18 @@ class Register(Resource):
         password = data["password"]
         with connection:
             with connection.cursor() as cursor:
-                cursor.execute(CREATE_USER_TABLE)
-                cursor.execute(CHECK_USER_EXIST_BY_EMAIL, (email,))
+                cursor.execute(query.CREATE_USER_TABLE)
+                cursor.execute(query.CHECK_USER_EXIST_BY_EMAIL, (email,))
                 user = cursor.fetchall()
                 print(user)
                 if user:
                     return {'message' : 'User already exist'}, 400
                 else:
-                    cursor.execute(INSERT_USER_RETURN_ID, (email, password, 0))
+                    cursor.execute(query.INSERT_USER_RETURN_ID, (email, password, 0))
                     user_id = cursor.fetchone()[0]
                     token = create_access_token(identity=email)
                     return {"id": user_id, "message": f"Room {email}:{password} created.", "token": token}, 201
+
 
 class Login(Resource):
     def post(self):
@@ -94,52 +77,26 @@ class Login(Resource):
         password = data["password"]
         with connection:
             with connection.cursor() as cursor:
-                cursor.execute(CREATE_USER_TABLE)
-                cursor.execute(LOGIN, (email, password))
+                cursor.execute(query.CREATE_USER_TABLE)
+                cursor.execute(query.LOGIN, (email, password))
                 user = cursor.fetchall()
                 if user:
                     token = create_access_token(identity=user[0][1], expires_delta=False)
                     return {"id": user[0][0], "message": f"Login successful", "token": token}, 201
                 else:
                     return {'message' : 'User not exist'}, 400
-                    cursor.execute(INSERT_USER_RETURN_ID, (email, password))
-                    user_id = cursor.fetchone()[0]
-                    token = create_access_token(identity=email)
-                    return {"id": user_id, "message": f"Room {email}:{password} created.", "token": token}, 201
 
     
 
 class Auth(Resource):
     pass
 
-def verify_token_and_get_user(token: str):
-
-    if not isinstance(token, str):
-        return False
-
-    token = token.replace('Bearer ', '')
-
-    try:
-        email = decode_token(token)['sub']
-        with connection:
-            with connection.cursor() as cursor:
-                cursor.execute(CHECK_USER_EXIST_BY_EMAIL, (email,))
-                user = cursor.fetchall()
-
-                if not user or len(user) != 1:
-                    return []
-
-                return user[0]
-                    
-    except Exception:
-        return []
-
 
 class User(Resource):
     def get(self):
 
         token = request.headers.get("Authorization")
-        user = verify_token_and_get_user(token)
+        user = verify_token_and_get_user(token, connection)
 
         if not user or len(user) == 0:
             return {'message' : 'Token non valido'}, 400
@@ -157,7 +114,7 @@ class User(Resource):
 
         with connection:
             with connection.cursor() as cursor:
-                cursor.execute(CHECK_USER_EXIST_BY_ID, (user_to_check,))
+                cursor.execute(query.CHECK_USER_EXIST_BY_ID, (user_to_check,))
                 user_fetched = cursor.fetchall()
                 
                 if not user_fetched or len(user_fetched) != 1:
@@ -165,7 +122,6 @@ class User(Resource):
                         
                 return {'user': user_fetched[0]}        
                 
-
     
 class Api(Resource):
     def get(self):
