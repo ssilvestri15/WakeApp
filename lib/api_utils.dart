@@ -5,19 +5,30 @@ import 'dart:convert';
 Future<bool> doLogin(String email, String password) async {
 
   try {
+
+    Map data = {
+      'email' : email,
+      'password' : password
+    };
+    var body = jsonEncode(data);
+
+    //URL da cambiare ogni volta
+    String url = "https://4f601d1f972432.lhr.life/api/auth/login";
+
     Response response = await post(
-        Uri.parse('https://http://172.19.161.41:5000/api/login'),
-        body: {
-          'email' : email,
-          'password' : password
-        }
+        Uri.parse(url),
+        headers: {"Content-Type": "application/json"},
+        body: body
     );
 
-    if(response.statusCode == 200){
+    print(response.body);
+    print(response.statusCode);
+    
+    if(response.statusCode == 201){
       var data = jsonDecode(response.body.toString());
       print(data['token']);
       return true;
-    }else {
+    } else {
       print('failed');
       return false;
     }
