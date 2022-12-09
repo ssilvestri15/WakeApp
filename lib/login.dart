@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:wakeapp/home.dart';
+import 'package:wakeapp/api_utils.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -67,17 +69,23 @@ class _LoginState extends State<Login> {
                   const SizedBox(
                     height: 40,
                   ),
-                  ElevatedButton(onPressed: () {
-                    var username = _emailController.text;
-                    var password = _passwordController.text;
-
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          content: Text('Username: $username \nPassword: $password'),
-                        ),
-                      );
-
+                  ElevatedButton(
+                    onPressed: () {
+                      var email = _emailController.text;
+                      var password = _passwordController.text;
+                      doLogin(email, password).then((value) {
+                        if (value) {
+                          //success
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const Home()),
+                          );
+                        } else {
+                          showDialog(context: context, builder: (context) => AlertDialog(
+                            title: Text("Error"),
+                          ));
+                        }
+                      });
                     },
                       style: ElevatedButton.styleFrom(
                         shape: const StadiumBorder(),
