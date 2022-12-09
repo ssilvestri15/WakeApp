@@ -20,7 +20,9 @@ video_folder = os.environ.get("UPLOAD_FOLDER")  #estrae url da env
 connection = psycopg2.connect(url)
 
 api = Api(app)
-        
+
+
+## TODO: DA FINIRE ######################################################################
 class Video(Resource):
     def post(self):
         # check if the post request has the file part
@@ -37,16 +39,21 @@ class Video(Resource):
             resp = {'message' : 'Allowed file types are mp4, mov, avi, flv, mkv, webm'}
             resp.status_code = 400
             return resp
-
+#########################################################################################
 
 class Register(Resource):
     def post(self):
         data = request.get_json()
         email = data["email"]
         password = data["password"]
+        cf = data["codice_fiscale"]
+        telefono = data["telefono"]
+        nome = data["nome"]
+        cognome = data["cognome"]
+        data_di_nascita = data["data_di_nascita"]
+        residenza = data["residenza"]
         with connection:
             with connection.cursor() as cursor:
-                cursor.execute(query.CREATE_USER_TABLE)
                 cursor.execute(query.CHECK_USER_EXIST_BY_EMAIL, (email,))
                 user = cursor.fetchall()
                 print(user)
@@ -55,7 +62,7 @@ class Register(Resource):
                     return {'message' : 'User already exist'}, 400
                 else:
                     encrypted = bcrypt.generate_password_hash(password).decode('utf-8')
-                    cursor.execute(query.INSERT_USER_RETURN_ID, (email, encrypted, 0))
+                    cursor.execute(query.INSERT_USER_RETURN_ID, (cf, email, encrypted, telefono, nome, cognome, data_di_nascita, residenza, 0))
                     user_id = cursor.fetchone()[0]
                     token = create_access_token(identity=email, )
                     cursor.close()
@@ -69,14 +76,14 @@ class Login(Resource):
         password = data["password"]
         with connection:
             with connection.cursor() as cursor:
-                cursor.execute(query.CREATE_USER_TABLE)
                 cursor.execute(query.LOGIN, (email,))
                 user = cursor.fetchall()
+                print(user)
                 if user:
-                    if not bcrypt.check_password_hash(user[0][2], password):
+                    if not bcrypt.check_password_hash(user[0][1], password):
                         return {'message' : 'La password non è valida'}, 400
 
-                    token = create_access_token(identity=user[0][1], expires_delta=False)
+                    token = create_access_token(identity=user[0][0], expires_delta=False)
                     return {"id": user[0][0], "message": f"Login successful", "token": token}, 201
                 else:
                     return {'message' : 'User not exist'}, 400
@@ -104,7 +111,7 @@ class User(Resource):
         if user_to_check == user[0]:
             return {'user': user}
 
-        if (user[3] != 1):
+        if (user[8] != 1):
             return {'message': 'Non sei autorizzato'}, 400
 
         with connection:
@@ -132,4 +139,4 @@ api.add_resource(Video, "/api/video") #endpoint to User
 
 if __name__ == '__main__':
     #app.run(host="172.19.161.41")  #uni
-    app.run(host='192.168.178.68') #casa
+    app.run() #casa
