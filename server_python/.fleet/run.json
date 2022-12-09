@@ -1,0 +1,9 @@
+{
+    "configurations": [
+        {
+            "name":"RUN SERVER API",
+            "type": "python",
+            "arguments": ["api_server.py"],
+        }
+    ]
+}
