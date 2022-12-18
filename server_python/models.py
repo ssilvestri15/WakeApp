@@ -12,7 +12,7 @@ database_url = os.environ.get("DATABASE_URL")
 
 engine = create_engine(database_url, isolation_level="AUTOCOMMIT")
 
-class TestoDaLegger(Base):
+class TestoDaLeggere(Base):
    __tablename__ = 'testoDaLeggere'
 
    idTesto = Column(Text, primary_key=True, nullable=False)

@@ -32,6 +32,34 @@ video_folder = os.environ.get("UPLOADED_VIDEOS_DEST")  #estrae url da env
 
 api = Api(app)
 
+class VideoDetails(Resource):
+    def get(self):
+        # controllo token, faccio il redirect e decrypto
+        token = request.headers.get("Authorization")
+        user = verify_token_and_get_user2(token)
+            
+        if not user:
+            return {'message' : 'Token non valido'}, 400
+
+        if user.tipo != 1:
+            return {'message' : 'Non sei autorizzato'}, 400
+
+        user_to_check = request.args.get('user_id')
+        if not user_to_check or not isinstance(user_to_check, str):
+            return {'message': 'Richiesta non valida'}
+
+        user_fetched = getUserById(user_to_check, False)
+        if not user_fetched:
+             return { 'message': "L'utente richiesto non esiste" }
+
+        video_to_check = request.args.get('video_id')
+        if not video_to_check or not isinstance(video_to_check, str):
+            return {'message': 'Richiesta non valida'}
+
+
+        #video = getUserVideoById(user_to_check, video_to_check)
+        pass
+
 class Video(Resource):
     def post(self):
         # check if the post request has the file part
@@ -48,6 +76,10 @@ class Video(Resource):
             if not user:
                 return {'message' : 'Token non valido'}, 400
 
+            # TODO
+            # Aggiungere una voce al video al db
+            # prendersi l'idvideo e usarlo come nome file
+            
             filename = videos.save(file, folder=str(user.idutente))
             filename = os.environ.get("UPLOADED_VIDEOS_DEST")+filename
             if not encrypt_video(str(user.key), filename):
@@ -58,6 +90,54 @@ class Video(Resource):
             resp = {'message' : 'Allowed file types are mp4, mov, avi, flv, mkv, webm'}
             resp.status_code = 400
             return resp
+
+    def get(self):
+
+        # Lista video di un utente per la dashboard
+
+        token = request.headers.get("Authorization")
+        user = verify_token_and_get_user2(token)
+            
+        if not user:
+            return {'message' : 'Token non valido'}, 400
+
+        if user.tipo != 1:
+            return {'message' : 'Non sei autorizzato'}, 400
+
+        user_to_check = request.args.get('user_id')
+
+        if not user_to_check or not isinstance(user_to_check, str):
+            return {'message': 'Richiesta non valida'}
+
+        user_fetched = getUserById(user_to_check, False)
+
+        if not user_fetched:
+             return { 'message': "L'utente richiesto non esiste" }
+
+        lista_video = getVideosByUserId(user_fetched.idutente)
+
+        if not lista_video:
+            return { 'message': "Si è verificato un errore" }
+
+        if (len(lista_video) == 0):
+            return { 'message':'Nessun video' }
+
+        # TODO
+        # ritornare lista video
+
+        return 'ok'
+          
+def getVideosByUserId(id):
+    try:
+        query = select(models.Video).where(models.Video.idutente == id)
+        result = session.execute(query).all()
+        list = []
+        for row in result:
+            print(row)
+            list.append(row[0])
+        return list
+    except Exception:
+        return False      
 
 class Register(Resource):
     def post(self):
@@ -249,6 +329,7 @@ api.add_resource(Register, "/api/auth/register") #endpoint to Auth
 api.add_resource(Login, "/api/auth/login") #endpoint to Auth
 api.add_resource(Details, "/api/user") #endpoint to User
 api.add_resource(Video, "/api/video") #endpoint to User
+api.add_resource(Video, "/api/video/play") #endpoint to User
 
 if __name__ == '__main__':
     #app.run(host="172.19.161.41")  #uni
