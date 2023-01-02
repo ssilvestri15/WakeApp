@@ -5,10 +5,14 @@ from moviepy.editor import *
 from cryptography.fernet import Fernet
 from flask_bcrypt import Bcrypt
 
-ALLOWED_EXTENSIONS = set(['mp4', 'mov', 'avi', 'flv', 'mkv', 'webm'])
+ALLOWED_EXTENSIONS_VIDEO = set(['mp4', 'mov', 'avi', 'flv', 'mkv', 'webm'])
+ALLOWED_EXTENSIONS_AUDIO = set(['m4a', 'flac', 'mp3', 'mp4', 'wav', 'wma', 'aac'])
 
-def allowed_file(filename):
-	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+def allowed_file_video(filename):
+	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS_VIDEO
+
+def allowed_file_audio(filename):
+	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS_AUDIO
 
 def verify_token_and_get_user(token: str, connection):
 
@@ -35,7 +39,7 @@ def verify_token_and_get_user(token: str, connection):
 def validate_register_input(email, password, cf, telefono, nome, cognome, data_di_nascita, residenza):
 	return True
 
-def encrypt_video(key, filepath):
+def encrypt_file(key, filepath):
 	try:
 		fernet = Fernet(key)
 		

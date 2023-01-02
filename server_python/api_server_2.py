@@ -9,7 +9,7 @@ from flask_restful import Resource, Api
 from flask_jwt_extended import JWTManager, create_access_token, decode_token
 from flask_bcrypt import Bcrypt
 from flask_uploads import UploadSet, configure_uploads
-from utils import allowed_file, validate_register_input, ALLOWED_EXTENSIONS, encrypt_video, decrypt_video
+from utils import allowed_file_video, allowed_file_audio, validate_register_input, ALLOWED_EXTENSIONS_VIDEO, ALLOWED_EXTENSIONS_AUDIO, encrypt_file, decrypt_video
 from cryptography.fernet import Fernet
 
 
@@ -21,16 +21,118 @@ session = _Session()
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 
-app.config['JWT_SECRET_KEY'] = os.environ.get("JWT_SECRET_KEY")  # Change on production
-app.config['UPLOADED_VIDEOS_DEST'] = os.environ.get("UPLOADED_VIDEOS_DEST")  # Change on production
-app.config['UPLOADED_VIDEOS_ALLOW'] = ALLOWED_EXTENSIONS
+video_folder = os.environ.get("UPLOADED_VIDEOS_DEST")
+audio_folder = os.environ.get("UPLOADED_AUDIOS_DEST")
+
+app.config['JWT_SECRET_KEY'] = os.environ.get("JWT_SECRET_KEY")
+app.config['UPLOADED_VIDEOS_DEST'] = video_folder
+app.config['UPLOADED_VIDEOS_ALLOW'] = ALLOWED_EXTENSIONS_VIDEO
+app.config['UPLOADED_AUDIOS_DEST'] = audio_folder
+app.config['UPLOADED_AUDIOS_ALLOW'] = ALLOWED_EXTENSIONS_AUDIO
 jwt = JWTManager(app)
 
 videos = UploadSet('videos')
+audios = UploadSet('audios')
 configure_uploads(app, videos)
-video_folder = os.environ.get("UPLOADED_VIDEOS_DEST")  #estrae url da env
+configure_uploads(app, audios)
+
 
 api = Api(app)
+
+class AudioDetails(Resource):
+    def get(self):
+        # controllo token, faccio il redirect e decrypto
+        token = request.headers.get("Authorization")
+        user = verify_token_and_get_user2(token)
+            
+        if not user:
+            return {'message' : 'Token non valido'}, 400
+
+        if user.tipo != 1:
+            return {'message' : 'Non sei autorizzato'}, 400
+
+        user_to_check = request.args.get('user_id')
+        if not user_to_check or not isinstance(user_to_check, str):
+            return {'message': 'Richiesta non valida'}
+
+        user_fetched = getUserById(user_to_check, False)
+        if not user_fetched:
+             return { 'message': "L'utente richiesto non esiste" }
+
+        audio_to_check = request.args.get('audio_id')
+        if not audio_to_check or not isinstance(audio_to_check, str):
+            return {'message': 'Richiesta non valida'}
+
+        #audio = getUserAudioById(user_to_check, audio_to_check)
+        pass
+
+class Audio(Resource):
+    def post(self):
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            return {'message' : 'No file part in the request'}, 400
+        file = request.files['file']
+        if file.filename == '':
+            return {'message' : 'No file selected for uploading'}, 400
+        if file and allowed_file_audio(file.filename):
+            
+            token = request.headers.get("Authorization")
+            user = verify_token_and_get_user2(token)
+            
+            if not user:
+                return {'message' : 'Token non valido'}, 400
+
+            # TODO
+            # Aggiungere una voce audio al db
+            # prendersi l'idaudio e usarlo come nome file
+            
+            filename = audios.save(file, folder=str(user.idutente))
+            filename = os.environ.get("UPLOADED_AUDIOS_DEST")+filename
+            if not encrypt_file(str(user.key), filename):
+                return { 'message':'Si è verificato un errore'}
+
+            return {'message' : f'File successfully uploaded: {filename}'}, 201
+        else:
+            resp = {'message' : 'Allowed file types are m4a, flac, mp3, mp4, wav, wma, aac'}
+            resp.status_code = 400
+            return resp
+
+    def get(self):
+
+        # Lista audio di un utente per la dashboard
+
+        token = request.headers.get("Authorization")
+        user = verify_token_and_get_user2(token)
+            
+        if not user:
+            return {'message' : 'Token non valido'}, 400
+
+        if user.tipo != 1:
+            return {'message' : 'Non sei autorizzato'}, 400
+
+        user_to_check = request.args.get('user_id')
+
+        if not user_to_check or not isinstance(user_to_check, str):
+            return {'message': 'Richiesta non valida'}
+
+        user_fetched = getUserById(user_to_check, False)
+
+        if not user_fetched:
+             return { 'message': "L'utente richiesto non esiste" }
+
+        lista_audio = getAudiosByUserId(user_fetched.idutente)
+
+        if not lista_audio:
+            return { 'message': "Si è verificato un errore" }
+
+        if (len(lista_audio) == 0):
+            return { 'message':'Nessun audio' }
+
+        # TODO
+        # ritornare lista audio
+
+        return 'ok'
+          
 
 class VideoDetails(Resource):
     def get(self):
@@ -56,7 +158,6 @@ class VideoDetails(Resource):
         if not video_to_check or not isinstance(video_to_check, str):
             return {'message': 'Richiesta non valida'}
 
-
         #video = getUserVideoById(user_to_check, video_to_check)
         pass
 
@@ -68,7 +169,7 @@ class Video(Resource):
         file = request.files['file']
         if file.filename == '':
             return {'message' : 'No file selected for uploading'}, 400
-        if file and allowed_file(file.filename):
+        if file and allowed_file_video(file.filename):
             
             token = request.headers.get("Authorization")
             user = verify_token_and_get_user2(token)
@@ -82,7 +183,7 @@ class Video(Resource):
             
             filename = videos.save(file, folder=str(user.idutente))
             filename = os.environ.get("UPLOADED_VIDEOS_DEST")+filename
-            if not encrypt_video(str(user.key), filename):
+            if not encrypt_file(str(user.key), filename):
                 return { 'message':'Si è verificato un errore'}
 
             return {'message' : f'File successfully uploaded: {filename}'}, 201
@@ -137,7 +238,19 @@ def getVideosByUserId(id):
             list.append(row[0])
         return list
     except Exception:
-        return False      
+        return False
+
+def getAudiosByUserId(id):
+    try:
+        query = select(models.Audioc).where(models.Audioc.idutente == id)
+        result = session.execute(query).all()
+        list = []
+        for row in result:
+            print(row)
+            list.append(row[0])
+        return list
+    except Exception:
+        return False
 
 class Register(Resource):
     def post(self):
@@ -323,13 +436,15 @@ class Api(Resource):
     def get(self):
         return { "successful": True, "message": "Le API sono attive e funzionanti" }, 200
 
-api.add_resource(Api, "/api") #test endpoint
-api.add_resource(Auth, "/api/auth") #endpoint to Auth
-api.add_resource(Register, "/api/auth/register") #endpoint to Auth
-api.add_resource(Login, "/api/auth/login") #endpoint to Auth
-api.add_resource(Details, "/api/user") #endpoint to User
-api.add_resource(Video, "/api/video") #endpoint to User
-api.add_resource(Video, "/api/video/play") #endpoint to User
+api.add_resource(Api, "/api") #endpoint to
+api.add_resource(Auth, "/api/auth") #endpoint to
+api.add_resource(Register, "/api/auth/register") #endpoint to 
+api.add_resource(Login, "/api/auth/login") #endpoint to 
+api.add_resource(Details, "/api/user") #endpoint to 
+api.add_resource(Video, "/api/video") #endpoint to 
+api.add_resource(VideoDetails, "/api/video/play") #endpoint to 
+api.add_resource(Audio, "/api/audio") #endpoint to 
+api.add_resource(AudioDetails, "/api/audio/play") #endpoint to 
 
 if __name__ == '__main__':
     #app.run(host="172.19.161.41")  #uni
