@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:wakeapp/home.dart';
+import 'package:wakeapp/registraVideo.dart';
 import 'login.dart';
 
 void main() {
@@ -7,7 +9,7 @@ void main() {
     theme: ThemeData(
       primaryColor: const Color.fromRGBO(81, 48, 14, 1),
     ),
-    home: const Login(),
+    home: const RegistraVideo(),
     routes: {
       'login': (context) => const Login(),
     },
