@@ -33,7 +33,7 @@ class RegistraVideo extends StatelessWidget {
                   TextButton(
                   child: Text('vai avanti'),
                     onPressed: () {
-                      Navigator.push(context, CupertinoPageRoute(builder: (context) => const CameraPage()));
+                      Navigator.push(context, CupertinoPageRoute(builder: (context) => CameraPage()));
                     },
                   ),
                 ],
