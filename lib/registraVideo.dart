@@ -30,12 +30,23 @@ class RegistraVideo extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TextButton(
-                  child: Text('vai avanti'),
+                  ElevatedButton(
                     onPressed: () {
                       Navigator.push(context, CupertinoPageRoute(builder: (context) => const CameraPage()));
                     },
+                    style: ElevatedButton.styleFrom(
+                      shape: const StadiumBorder(),
+                      minimumSize: const Size(150, 40),
+                      backgroundColor: const Color.fromRGBO(81, 48, 14, 1),
+                    ),
+                    child: const Text('Avanti',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.normal,
+                        fontSize: 15,
+                      ),
                   ),
+                  )
                 ],
               )
             ),
