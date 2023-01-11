@@ -32,7 +32,7 @@ class RegistraVideo extends StatelessWidget {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.push(context, CupertinoPageRoute(builder: (context) => const CameraPage()));
+                      Navigator.push(context, CupertinoPageRoute(builder: (context) => CameraPage()));
                     },
                     style: ElevatedButton.styleFrom(
                       shape: const StadiumBorder(),

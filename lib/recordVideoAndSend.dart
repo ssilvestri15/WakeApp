@@ -16,8 +16,10 @@ class RecordVideoAndSend extends State<CameraPage> {
       color: Colors.amber,
 
       onImageCaptured: (value) {
+
       },
       onVideoRecorded: (value) {
+
       },
     );
     // return Container();
