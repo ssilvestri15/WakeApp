@@ -3,7 +3,9 @@ import 'dart:async';
 import 'dart:convert';
 
 Future<bool> doLogin(String email, String password) async {
+
   try {
+
     Map data = {
       'email' : email,
       'password' : password
@@ -24,12 +26,15 @@ Future<bool> doLogin(String email, String password) async {
     
     if(response.statusCode == 201){
       var data = jsonDecode(response.body.toString());
+      print(data['token']);
       return true;
     } else {
+      print('failed');
       return false;
     }
   } on Exception catch (e) {
     print(e);
     return false;
   }
+
 }
