@@ -1,6 +1,7 @@
 import 'package:http/http.dart';
 import 'dart:async';
 import 'dart:convert';
+import 'package:file/file.dart';
 
 Future<bool> doLogin(String email, String password) async {
 
@@ -37,4 +38,24 @@ Future<bool> doLogin(String email, String password) async {
     return false;
   }
 
-}
+  Future<int> uploadVideo(File videoFile) async {
+    var token = ""; //TODO: get token from stored data
+
+    Map<String, String> headers = {
+    "Content-Type": "application/json",
+    'Authorization': 'Bearer $token'
+    };
+
+    String url = ""; // TODO: change url
+
+    var request = MultipartRequest(
+        "POST", Uri.parse('your api url here'));
+    request.files.add(MultipartFile.fromBytes('video', videoFile.readAsBytesSync(), filename: 'video'));
+
+    var response = await request.send();
+
+    return response.statusCode;
+
+  }
+
+  }

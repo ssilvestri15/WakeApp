@@ -60,24 +60,68 @@ class _CameraPageState extends State<CameraPage> {
           child: CircularProgressIndicator(),
         ),
       );
-    } else {return Center(
-      child: Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          CameraPreview(_cameraController,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(25),
-            child: FloatingActionButton(
-              backgroundColor: Colors.red,
-              child: Icon(_isRecording ? Icons.stop : Icons.circle),
-              onPressed: () => _recordVideo(),
+    } else {
+      return Container(
+        color: Color.fromRGBO(255, 222, 232, 1),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 50, bottom: 50),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 150,
+                      child: Text('È il momento di raccontare',
+                        overflow: TextOverflow.clip,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight:FontWeight.bold,
+                          decoration: TextDecoration.none,
+                          color: Color.fromRGBO(81, 48, 14, 1),
+                        ),
+                      ),
+                    ),
+                    Image(
+                      width: 150,
+                      image: AssetImage('assets/images/racconta.png'),
+                    )
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 50, right: 50),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: CameraPreview(_cameraController),
+                  ),
+                ),
+                Text('00:00',
+                  overflow: TextOverflow.clip,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight:FontWeight.bold,
+                    decoration: TextDecoration.none,
+                    color: Color.fromRGBO(81, 48, 14, 1),
+                  ),
+                ),
+                FloatingActionButton.large(
+                  backgroundColor: Color.fromRGBO(235, 155, 121, 1),
+                  child: Icon(
+                    _isRecording ? Icons.stop : Icons.circle,
+                    size: 70,
+                    color: Color.fromRGBO(239, 222, 204, 1),
+                  ),
+                  onPressed: () => _recordVideo(),
+                ),
+              ],
             ),
           ),
-        ],
-      ),
-    );
+        ),
+      );
     }
   }
-
 }
