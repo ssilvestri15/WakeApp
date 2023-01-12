@@ -95,7 +95,7 @@ class _CameraPageState extends State<CameraPage> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+                  children: const [
                     SizedBox(
                       width: 150,
                       child: Text('È il momento di raccontare',

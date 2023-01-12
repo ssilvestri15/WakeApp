@@ -3,6 +3,7 @@ import 'package:wakeapp/audio_page.dart';
 import 'package:wakeapp/camera_page.dart';
 import 'package:wakeapp/home.dart';
 import 'package:wakeapp/invioUmore.dart';
+import 'package:wakeapp/notifica_page.dart';
 import 'login.dart';
 
 void main() {
@@ -11,7 +12,7 @@ void main() {
     theme: ThemeData(
       primaryColor: const Color.fromRGBO(81, 48, 14, 1),
     ),
-    home: const CameraPage(),
+    home: const NotificaPage(),
     routes: {
       'login': (context) => const Login(),
     },
