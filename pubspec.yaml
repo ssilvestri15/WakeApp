@@ -41,6 +41,10 @@ dependencies:
   flutter_camera: ^0.1.1
   video_player: ^2.4.10
   path_provider: ^2.0.11
+  flutter_sound: ^9.2.13
+  permission_handler: ^10.2.0
+  audio_session: ^0.1.13
+  just_audio: ^0.9.31
 
 dev_dependencies:
   flutter_test:
@@ -71,6 +75,7 @@ flutter:
     - assets/images/emoji3.png
     - assets/images/emoji4.png
     - assets/images/racconta.png
+    - assets/images/audio.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
