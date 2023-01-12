@@ -21,7 +21,9 @@ class _InvioUmoreState extends State<InvioUmore>{
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Row(
+        Padding(
+        padding: const EdgeInsets.only(left: 30),
+        child: Row(
               children: const [
                 Text('Ci siamo quasi', style:
                 TextStyle(
@@ -30,7 +32,10 @@ class _InvioUmoreState extends State<InvioUmore>{
                 ),),
               ],
             ),
-            Row(
+        ),
+      Padding(
+        padding: const EdgeInsets.only(left: 30),
+        child:Row(
 
               children: const [
                 Text('Ora seleziona il tuo umore', style:
@@ -41,7 +46,7 @@ class _InvioUmoreState extends State<InvioUmore>{
                 ),),
               ],
             ),
-
+      ),
            /* Container(
               child: const Text('Ci siamo quasi', style:
                 TextStyle(
@@ -58,38 +63,18 @@ class _InvioUmoreState extends State<InvioUmore>{
               ),
               margin: EdgeInsetsDirectional.only(bottom: 20),
             ),*/
-            InkWell(
-              splashColor: Colors.deepOrange,
-              onTap: () {},
-              child: Ink.image(image: AssetImage('assets/images/emoji1.png'),
-              height: 150,
-              width: 150,
-              ),
-            ),
-            InkWell(
-              splashColor: Colors.deepOrange,
-              onTap: () {},
-              child: Ink.image(image: AssetImage('assets/images/emoji2.png'),
-                height: 150,
-                width: 150,
-              ),
-            ),
-            InkWell(
-              splashColor: Colors.deepOrange,
-              onTap: () {},
-              child: Ink.image(image: AssetImage('assets/images/emoji3.png'),
-                height: 150,
-                width: 150,
-              ),
-            ),
-            InkWell(
-              splashColor: Colors.deepOrange,
-              onTap: () {},
-              child: Ink.image(image: AssetImage('assets/images/emoji4.png'),
-                height: 150,
-                width: 150,
-              ),
-            )
+             IconButton(onPressed: () {} , icon: Image(image: AssetImage('assets/images/emoji1.png')),
+            iconSize: 150,
+            splashColor: Colors.amberAccent, ),
+             IconButton(onPressed: () {} , icon: Image(image: AssetImage('assets/images/emoji2.png')),
+              iconSize: 150,
+              splashColor: Colors.amberAccent, ),
+            const IconButton(onPressed: null , icon: Image(image: AssetImage('assets/images/emoji3.png')),
+              iconSize: 150,
+              splashColor: Colors.amberAccent,),
+            const IconButton(onPressed: null , icon: Image(image: AssetImage('assets/images/emoji4.png')),
+              iconSize: 150,
+              splashColor: Colors.amberAccent,)
           ],
         ),
       ),
