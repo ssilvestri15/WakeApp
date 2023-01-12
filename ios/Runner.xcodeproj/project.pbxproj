@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -76,7 +76,6 @@
 				F2E4D7BD10E84D77BA4EA271 /* Pods-Runner.release.xcconfig */,
 				FF542AB50D722529CF8B34AB /* Pods-Runner.profile.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -363,6 +362,31 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-framework",
+					"\"AVFoundation\"",
+					"-framework",
+					"\"MediaPlayer\"",
+					"-framework",
+					"\"audio_session\"",
+					"-framework",
+					"\"camera_avfoundation\"",
+					"-framework",
+					"\"flutter_sound\"",
+					"-framework",
+					"\"flutter_sound_core\"",
+					"-framework",
+					"\"just_audio\"",
+					"-framework",
+					"\"path_provider_ios\"",
+					"-framework",
+					"\"permission_handler_apple\"",
+					"-framework",
+					"\"video_player_avfoundation\"",
+					"-lc++",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.itsvil.appchallenge.wakeapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -492,6 +516,31 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-framework",
+					"\"AVFoundation\"",
+					"-framework",
+					"\"MediaPlayer\"",
+					"-framework",
+					"\"audio_session\"",
+					"-framework",
+					"\"camera_avfoundation\"",
+					"-framework",
+					"\"flutter_sound\"",
+					"-framework",
+					"\"flutter_sound_core\"",
+					"-framework",
+					"\"just_audio\"",
+					"-framework",
+					"\"path_provider_ios\"",
+					"-framework",
+					"\"permission_handler_apple\"",
+					"-framework",
+					"\"video_player_avfoundation\"",
+					"-lc++",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.itsvil.appchallenge.wakeapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -514,6 +563,31 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-framework",
+					"\"AVFoundation\"",
+					"-framework",
+					"\"MediaPlayer\"",
+					"-framework",
+					"\"audio_session\"",
+					"-framework",
+					"\"camera_avfoundation\"",
+					"-framework",
+					"\"flutter_sound\"",
+					"-framework",
+					"\"flutter_sound_core\"",
+					"-framework",
+					"\"just_audio\"",
+					"-framework",
+					"\"path_provider_ios\"",
+					"-framework",
+					"\"permission_handler_apple\"",
+					"-framework",
+					"\"video_player_avfoundation\"",
+					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.itsvil.appchallenge.wakeapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";

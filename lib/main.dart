@@ -11,7 +11,7 @@ void main() {
     theme: ThemeData(
       primaryColor: const Color.fromRGBO(81, 48, 14, 1),
     ),
-    home: const AudioPage(),
+    home: const CameraPage(),
     routes: {
       'login': (context) => const Login(),
     },

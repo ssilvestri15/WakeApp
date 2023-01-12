@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
@@ -45,10 +47,30 @@ class _CameraPageState extends State<CameraPage> {
 
       Navigator.push(context, route);
     } else {
+      recordTime();
       await _cameraController.prepareForVideoRecording();
       await _cameraController.startVideoRecording();
       setState(() => _isRecording = true);
     }
+  }
+
+  String recordingTime = '00:00'; // to store value
+
+  void recordTime() {
+    var startTime = DateTime.now();
+    Timer.periodic(const Duration(seconds: 1), (Timer t) {
+      var diff = DateTime.now().difference(startTime);
+
+      if (!_isRecording) {
+        t.cancel();
+      }
+      setState(() {
+        recordingTime =
+        '${diff.inHours == 0 ? '' : '${diff.inHours.toString().padLeft(2,
+            "0")}:'}${(diff.inMinutes % 60).floor().toString().padLeft(2,
+            "0")}:${(diff.inSeconds % 60).floor().toString().padLeft(2, '0')}';
+      });
+    });
   }
 
   @override
@@ -99,7 +121,7 @@ class _CameraPageState extends State<CameraPage> {
                     child: CameraPreview(_cameraController),
                   ),
                 ),
-                Text('00:00',
+                Text('$recordingTime',
                   overflow: TextOverflow.clip,
                   style: TextStyle(
                     fontSize: 20,
