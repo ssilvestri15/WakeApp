@@ -45,6 +45,7 @@ dependencies:
   permission_handler: ^10.2.0
   audio_session: ^0.1.13
   just_audio: ^0.9.31
+  shared_preferences: ^2.0.16
 
 dev_dependencies:
   flutter_test:

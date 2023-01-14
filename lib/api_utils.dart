@@ -1,20 +1,19 @@
 import 'package:http/http.dart';
 import 'dart:async';
 import 'dart:convert';
-import 'package:file/file.dart';
+import 'dart:io';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<bool> doLogin(String email, String password) async {
-
   try {
-
     Map data = {
-      'email' : email,
-      'password' : password
+      'email': email,
+      'password': password
     };
     var body = jsonEncode(data);
 
     //URL da cambiare ogni volta
-    String url = "https://4f601d1f972432.lhr.life/api/auth/login";
+    String url = "https://ac2a34ce064144.lhr.life/api/auth/login";
 
     Response response = await post(
         Uri.parse(url),
@@ -24,10 +23,12 @@ Future<bool> doLogin(String email, String password) async {
 
     print(response.body);
     print(response.statusCode);
-    
-    if(response.statusCode == 201){
+
+    if (response.statusCode == 201) {
       var data = jsonDecode(response.body.toString());
       print(data['token']);
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      pref.setString('token', data['token']);
       return true;
     } else {
       print('failed');
@@ -38,24 +39,33 @@ Future<bool> doLogin(String email, String password) async {
     return false;
   }
 
-  Future<int> uploadVideo(File videoFile) async {
-    var token = ""; //TODO: get token from stored data
+}
 
-    Map<String, String> headers = {
+Future<bool> uploadVideo(String filePath) async {
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  var token = pref.getString('token');
+
+  token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY3MTIwODA5NSwianRpIjoiYmE4NDVkNTAtZGE5Ni00N2Q4LWE1NmItNTY0MjkxZGYxNDVhIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6InRlc3QxQGdtYWlsLmNvbSIsIm5iZiI6MTY3MTIwODA5NX0.ZDfA5LfmvtmoigWz4Fqww3yKlhkJKbcHysi7intLwKo';
+
+  Map<String, String> headers = {
     "Content-Type": "application/json",
     'Authorization': 'Bearer $token'
-    };
+  };
 
-    String url = ""; // TODO: change url
+  String url = "https://ac2a34ce064144.lhr.life/api/user/video";
 
-    var request = MultipartRequest(
-        "POST", Uri.parse('your api url here'));
-    request.files.add(MultipartFile.fromBytes('video', videoFile.readAsBytesSync(), filename: 'video'));
+  File videoFile = File(filePath);
+  var request = MultipartRequest(
+      "POST", Uri.parse(url));
+  request.files.add(MultipartFile.fromBytes('file', videoFile.readAsBytesSync(), filename: 'video'));
+  request.headers.addAll(headers);
 
-    var response = await request.send();
+  var response = await request.send();
 
-    return response.statusCode;
+  print(response.statusCode);
+  print(await response.stream.bytesToString());
 
-  }
+  return response.statusCode == 201;
 
-  }
+}
+

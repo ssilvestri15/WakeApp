@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:wakeapp/invioUmore.dart';
+import 'package:wakeapp/api_utils.dart';
 
 class VideoPage extends StatefulWidget {
   final String filePath;
@@ -104,7 +105,18 @@ class _VideoPageState extends State<VideoPage> {
                           ),
                           ElevatedButton(
                             onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=> const InvioUmore()));
+                              uploadVideo(widget.filePath).then((value) {
+                                if (value) {
+                                  //success
+                                  showDialog(context: context, builder: (context) => const AlertDialog(
+                                    title: Text("Video caricato correttamente"),
+                                  ));
+                                } else {
+                                  showDialog(context: context, builder: (context) => const AlertDialog(
+                                    title: Text("Error"),
+                                  ));
+                                }
+                              });
                             },
                             style: ElevatedButton.styleFrom(
                               shape: const StadiumBorder(),
