@@ -29,6 +29,13 @@
             {
               "client_id": "647921788660-g3drp4gaebmkg8ss3ops75odsa0fvb96.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "647921788660-njm3ns10luthpmkl9s6ud09rla6hrsdl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.itsvil.appchallenge.wakeapp"
+              }
             }
           ]
         }
