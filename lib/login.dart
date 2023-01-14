@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:wakeapp/camera_page.dart';
 import 'package:wakeapp/home.dart';
 import 'package:wakeapp/api_utils.dart';
 
@@ -78,7 +79,7 @@ class _LoginState extends State<Login> {
                           //success
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const Home()),
+                            MaterialPageRoute(builder: (context) => const CameraPage()),
                           );
                         } else {
                           showDialog(context: context, builder: (context) => AlertDialog(

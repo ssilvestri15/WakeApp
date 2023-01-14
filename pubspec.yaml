@@ -48,6 +48,7 @@ dependencies:
   firebase_messaging: ^11.2.11
   overlay_support: ^1.2.1
   just_audio: ^0.9.31
+  shared_preferences: ^2.0.16
 
 dev_dependencies:
   flutter_test:
