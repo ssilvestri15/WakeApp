@@ -52,12 +52,12 @@ Future<bool> uploadVideo(String filePath) async {
     'Authorization': 'Bearer $token'
   };
 
-  String url = "https://ac2a34ce064144.lhr.life/api/user/video";
+  String url = "https://4d3a52fff1bfe1.lhr.life/api/video";
 
   File videoFile = File(filePath);
   var request = MultipartRequest(
       "POST", Uri.parse(url));
-  request.files.add(MultipartFile.fromBytes('file', videoFile.readAsBytesSync(), filename: 'video'));
+  request.files.add(MultipartFile.fromBytes('file', videoFile.readAsBytesSync(), filename: 'video.mp4')); // TODO: change name
   request.headers.addAll(headers);
 
   var response = await request.send();
