@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:wakeapp/invioUmore.dart';
 
 typedef _Fn = void Function();
 
@@ -123,6 +124,7 @@ class _AudioPageState extends State<AudioPage>{
         fromURI: _mPath,
         //codec: kIsWeb ? Codec.opusWebM : Codec.aacADTS,
         whenFinished: () {
+          print(_mPath);
           setState(() {});
         })
         .then((value) {
@@ -154,16 +156,20 @@ class _AudioPageState extends State<AudioPage>{
   @override
   Widget build(BuildContext context) {
     Widget makeBody() {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      return
+        Padding(
+          padding: EdgeInsets.only(top: 50, bottom: 50),
+        child:
+          Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              /*SizedBox(           immagine gia con testo, per ora va bene
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                /*SizedBox(           immagine gia con testo, per ora va bene
                 width: 150,
                 child: Text('È il momento della favola',
                   overflow: TextOverflow.clip,
@@ -175,53 +181,56 @@ class _AudioPageState extends State<AudioPage>{
                   ),
                 ),
               ),*/
-              Image(
-                width: 240,
-                image: AssetImage('assets/images/audio.png'),
-              )
-            ],
-          ),
-          const SizedBox(
-            width: 380,
-            child: Text('Naruto Uzumaki è un ninja dodicenne del Villaggio della Foglia con il sogno di diventare hokage, il ninja più importante del villaggio, allo scopo di essere accettato dagli altri. Naruto infatti ha passato l infanzia nell emarginazione e, durante lo scontro col ninja traditore Mizuki, ne scopre il motivo: dentro di lui è sigillata la Volpe a Nove Code, uno dei nove cercoteri, giganteschi demoni sovrannaturali.',
-              overflow: TextOverflow.clip,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight:FontWeight.bold,
-                decoration: TextDecoration.none,
-                color: Color.fromRGBO(81, 48, 14, 1),
+                Image(
+                  width: 240,
+                  image: AssetImage('assets/images/audio.png'),
+                )
+              ],
+            ),
+            const SizedBox(
+              width: 380,
+              child: Text('Naruto Uzumaki è un ninja dodicenne del Villaggio della Foglia con il sogno di diventare hokage, il ninja più importante del villaggio, allo scopo di essere accettato dagli altri. Naruto infatti ha passato l infanzia nell emarginazione e, durante lo scontro col ninja traditore Mizuki, ne scopre il motivo: dentro di lui è sigillata la Volpe a Nove Code, uno dei nove cercoteri, giganteschi demoni sovrannaturali.',
+                overflow: TextOverflow.clip,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight:FontWeight.bold,
+                  decoration: TextDecoration.none,
+                  color: Color.fromRGBO(81, 48, 14, 1),
+                ),
               ),
             ),
-          ),
 
 
-          FloatingActionButton.large(
-            backgroundColor: const Color.fromRGBO(235, 155, 121, 1),
-            onPressed: getRecorderFn(),
-            child: Icon(
-              _mRecorder!.isRecording ? Icons.stop : Icons.mic,
-              size: 70,
-              color: const Color.fromRGBO(239, 222, 204, 1),
+            FloatingActionButton.large(
+              backgroundColor: const Color.fromRGBO(235, 155, 121, 1),
+              onPressed: getRecorderFn(),
+              child: Icon(
+                _mRecorder!.isRecording ? Icons.stop : Icons.mic,
+                size: 70,
+                color: const Color.fromRGBO(239, 222, 204, 1),
+              ),
             ),
-          ),
-          ElevatedButton(
-            onPressed: getPlaybackFn(),
-            style: ElevatedButton.styleFrom(
-              primary: Color.fromRGBO(235, 155, 121, 1)
+            ElevatedButton(
+              onPressed: getPlaybackFn(),
+              style: ElevatedButton.styleFrom(
+                  primary: Color.fromRGBO(235, 155, 121, 1)
+              ),
+              //disabledColor: Colors.grey,
+              child: Text(_mPlayer!.isPlaying ? 'Stop' : 'Ascolta di nuovo'),
             ),
-            //disabledColor: Colors.grey,
-            child: Text(_mPlayer!.isPlaying ? 'Stop' : 'Ascolta di nuovo'),
-          ),
-          ElevatedButton(
-            onPressed: (){},
-            style: ElevatedButton.styleFrom(
-                primary: Color.fromRGBO(235, 155, 121, 1)
+            ElevatedButton(
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>const InvioUmore()));
+              },
+              style: ElevatedButton.styleFrom(
+                  primary: Color.fromRGBO(235, 155, 121, 1)
+              ),
+              //disabledColor: Colors.grey,
+              child: Text('Invia'),
             ),
-            //disabledColor: Colors.grey,
-            child: Text('Invia'),
-          ),
-        ],
-      );
+          ],
+        )
+          ,);
     }
 
     return Scaffold(

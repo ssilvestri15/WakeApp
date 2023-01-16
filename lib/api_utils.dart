@@ -69,3 +69,31 @@ Future<bool> uploadVideo(String filePath) async {
 
 }
 
+Future<bool> uploadAudio(String filePath) async {
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  var token = pref.getString('token');
+
+  token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY3MTIwODA5NSwianRpIjoiYmE4NDVkNTAtZGE5Ni00N2Q4LWE1NmItNTY0MjkxZGYxNDVhIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6InRlc3QxQGdtYWlsLmNvbSIsIm5iZiI6MTY3MTIwODA5NX0.ZDfA5LfmvtmoigWz4Fqww3yKlhkJKbcHysi7intLwKo';
+
+  Map<String, String> headers = {
+    "Content-Type": "application/json",
+    'Authorization': 'Bearer $token'
+  };
+
+  String url = "https://541551c6e2a850.lhr.life/api/audio";
+
+  File audioFile = File(filePath);
+  var request = MultipartRequest(
+      "POST", Uri.parse(url));
+  request.files.add(MultipartFile.fromBytes('file', audioFile.readAsBytesSync(), filename: '')); // TODO: change name
+  request.headers.addAll(headers);
+
+  var response = await request.send();
+
+  print(response.statusCode);
+  print(await response.stream.bytesToString());
+
+  return response.statusCode == 201;
+
+}
+

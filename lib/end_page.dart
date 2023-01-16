@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wakeapp/camera_page.dart';
+import 'package:wakeapp/home.dart';
 
 class EndPage extends StatefulWidget{
   @override
@@ -30,7 +31,9 @@ class _EndPageState extends State<EndPage>{
                 ),
 
                 ElevatedButton(
-                  onPressed:null,
+                  onPressed:() {
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>Home()));
+                  },
                   style: ElevatedButton.styleFrom(
                     shape: const StadiumBorder(),
                     minimumSize: const Size(200, 60),

@@ -6,7 +6,8 @@ import 'package:wakeapp/camera_page.dart';
 import 'package:wakeapp/end_page.dart';
 import 'package:wakeapp/home.dart';
 import 'package:wakeapp/invioUmore.dart';
-import 'package:wakeapp/notifica_page.dart';
+import 'package:wakeapp/notifica_page_audio.dart';
+import 'package:wakeapp/notifica_page_video.dart';
 import 'login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:wakeapp/firebase_options.dart';
@@ -47,7 +48,7 @@ Future<void> main() async {
     theme: ThemeData(
       primaryColor: const Color.fromRGBO(81, 48, 14, 1),
     ),
-    home: const Home(),
+    home: const InvioUmore(),
     routes: {
       'login': (context) => const Login(),
     },

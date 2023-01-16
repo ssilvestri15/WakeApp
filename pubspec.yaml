@@ -83,6 +83,10 @@ flutter:
     - assets/images/pc.png
     - assets/images/end.png
     - assets/images/gatto.png
+    - assets/images/audioN.png
+    - assets/images/sorpresa.png
+    - assets/images/felice.png
+    - assets/images/disgusto.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -2,6 +2,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:wakeapp/camera_page.dart';
 import 'package:wakeapp/invioUmore.dart';
+import 'package:wakeapp/notifica_page_audio.dart';
+import 'package:wakeapp/notifica_page_video.dart';
 
 import 'audio_page.dart';
 
@@ -33,9 +35,9 @@ class _HomeState extends State<Home> {
   void _handleMessage(RemoteMessage message) {
     var title = message.notification?.title ?? '';
     if (title.contains('video')) {
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>CameraPage()));
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>NotificaPage()));
     } else {
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>AudioPage()));
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>NotificaPageAudio()));
     }
 
   }
