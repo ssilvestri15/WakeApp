@@ -52,7 +52,7 @@ Future<bool> uploadVideo(String filePath) async {
     'Authorization': 'Bearer $token'
   };
 
-  String url = "https://4d3a52fff1bfe1.lhr.life/api/video";
+  String url = "https://541551c6e2a850.lhr.life/api/video";
 
   File videoFile = File(filePath);
   var request = MultipartRequest(

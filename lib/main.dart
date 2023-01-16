@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wakeapp/audio_page.dart';
@@ -29,7 +30,8 @@ Future<void> main() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
 
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     print('Got a message whilst in the foreground!');
     print('Message data: ${message.data}');
 
@@ -45,7 +47,7 @@ Future<void> main() async {
     theme: ThemeData(
       primaryColor: const Color.fromRGBO(81, 48, 14, 1),
     ),
-    home: const CameraPage(),
+    home: const Home(),
     routes: {
       'login': (context) => const Login(),
     },
