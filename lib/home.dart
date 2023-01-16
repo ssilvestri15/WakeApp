@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:wakeapp/camera_page.dart';
 import 'package:wakeapp/invioUmore.dart';
 
+import 'audio_page.dart';
+
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -29,7 +31,13 @@ class _HomeState extends State<Home> {
   }
 
   void _handleMessage(RemoteMessage message) {
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>CameraPage()));
+    var title = message.notification?.title ?? '';
+    if (title.contains('video')) {
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>CameraPage()));
+    } else {
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>AudioPage()));
+    }
+
   }
 
   @override
