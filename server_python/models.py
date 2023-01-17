@@ -71,13 +71,14 @@ class Video(Base):
 class Audioc(Base):
    __tablename__ = 'audio'
 
-   idAudio = Column(Integer, primary_key=True, nullable=False)
+   idaudio = Column(Integer, primary_key=True, nullable=False, autoincrement = True)
    data =  Column(Text, nullable=False)
    durata = Column(Integer, nullable=False)
-   emozioneIA =  Column(Text, nullable=False)
-   emozioneUtente =  Column(Text, nullable=False)
-   idTesto = Column(Text, ForeignKey('testoDaLeggere.idTesto'), nullable=False)
-   idUtente = Column(Text, ForeignKey('utente.idutente'), nullable=False)
+   emozioneia =  Column(Text, nullable=False)
+   emozioneutente =  Column(Text, nullable=False)
+   idtesto = Column(Text, ForeignKey('testoDaLeggere.idTesto'), nullable=False)
+   idutente = Column(Text, ForeignKey('utente.idutente'), nullable=False)
+   path = Column(Text, nullable=False)
 
    def toJson(self):
       return {c.name: getattr(self, c.name) for c in self.__table__.columns}                     

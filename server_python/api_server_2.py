@@ -9,9 +9,40 @@ from flask_restful import Resource, Api
 from flask_jwt_extended import JWTManager, create_access_token, decode_token
 from flask_bcrypt import Bcrypt
 from flask_uploads import UploadSet, configure_uploads
-from utils import allowed_file_video, allowed_file_audio, validate_register_input, ALLOWED_EXTENSIONS_VIDEO, ALLOWED_EXTENSIONS_AUDIO, encrypt_file, decrypt_video
+from utils import allowed_file_video, allowed_file_audio, validate_register_input, ALLOWED_EXTENSIONS_VIDEO, ALLOWED_EXTENSIONS_AUDIO, encrypt_file, decrypt_video, send_not
 from cryptography.fernet import Fernet
+import schedule
+import time
+import firebase_admin
+from firebase_admin import credentials, messaging
+import random
+from threading import Thread
+from speech_emotion_recognition import analyze
+from convert_wavs import convert_audio
+import json
 
+def scheduleTime(isVideo):
+    minuteI = random.randint(0, 59)
+    hourI = random.randint(9, 21)
+    minute = f"0{minuteI}" if (minuteI <= 9) else f"{minuteI}"
+    hour = f"0{hourI}" if (hourI <= 9) else f"{hourI}"
+    timeFinal = f"{hour}:{minute}:00"
+    print(f"Next notication at {timeFinal}")
+    if isVideo:
+        schedule.every().day.at(timeFinal).do(send_not, messaging, "È l'ora del video!","Registra un video e dicci come ti senti 📽️❤️")
+    else:
+        schedule.every().day.at(timeFinal).do(send_not, messaging, "È l'ora dell'audio!","Leggi un breve testo e dicci come ti senti 📖❤️")
+    return schedule.CancelJob
+
+def scheduleNotification():
+    schedule.every().day.at("07:00").do(scheduleTime, True)
+    schedule.every().day.at("07:01").do(scheduleTime, False)
+    while 1:
+        schedule.run_pending()
+        time.sleep(1)
+
+firebase_cred = credentials.Certificate("firebase.json")
+firebase_app = firebase_admin.initialize_app(firebase_cred)
 
 load_dotenv(".flaskenv")
 
@@ -38,6 +69,34 @@ configure_uploads(app, audios)
 
 
 api = Api(app)
+
+class Notification(Resource):
+    def post(self):
+
+        token = request.headers.get("Authorization")
+        user = verify_token_and_get_user2(token)
+            
+        if not user:
+            return {'message' : 'Token non valido'}, 400
+
+        if user.tipo != 1:
+            return {'message' : 'Non sei autorizzato'}, 400
+
+        type = request.args.get('type')
+        title = request.args.get('title')
+        body = request.args.get('body')
+
+        if not title and not body:
+            if type == "Video":
+                send_not(messaging, "È l'ora di dirci come va","Registra un video e dicci come ti senti 📽️❤️")
+            else:
+                send_not(messaging, "È l'ora di dirci come va","Leggi un breve testo e dicci come ti senti 📖❤️")
+        else:
+            send_not(messaging, title, body)
+
+        return {'message': 'Notifica inviata correttamente'}
+        
+
 
 class AudioDetails(Resource):
     def get(self):
@@ -72,8 +131,20 @@ class Audio(Resource):
         if 'file' not in request.files:
             return {'message' : 'No file part in the request'}, 400
         file = request.files['file']
+
+        text = request.form.get('json')
+
+        if not text or text == '':
+            return {'message' : 'Richiesta non valida'}, 400
+
+        jsonT = json.loads(text)
+
+        if not jsonT or jsonT == '':
+            return {'message' : 'Richiesta non valida'}, 400
+
         if file.filename == '':
             return {'message' : 'No file selected for uploading'}, 400
+
         if file and allowed_file_audio(file.filename):
             
             token = request.headers.get("Authorization")
@@ -82,20 +153,51 @@ class Audio(Resource):
             if not user:
                 return {'message' : 'Token non valido'}, 400
 
-            # TODO
-            # Aggiungere una voce audio al db
-            # prendersi l'idaudio e usarlo come nome file
-            
+            ext = '.' in file.filename and file.filename.rsplit('.', 1)[1].lower()
             filename = audios.save(file, folder=str(user.idutente))
             filename = os.environ.get("UPLOADED_AUDIOS_DEST")+filename
-            if not encrypt_file(str(user.key), filename):
-                return { 'message':'Si è verificato un errore'}
 
-            return {'message' : f'File successfully uploaded: {filename}'}, 201
+            try: 
+                convert_audio(filename, filename+".wav", True)
+            except:
+                return { 'message':'Si è verificato un errore - Audio'}
+            
+            filename = filename+".wav"
+            emoji = analyze(filename)
+            print(emoji)
+            if not encrypt_file(str(user.key), filename):
+                return { 'message':'Si è verificato un errore - Encrypt'}
+
+            idTesto = jsonT["idTesto"]
+            emojiUser = jsonT["emojiUser"]
+
+            query = insert(models.Audioc.__table__).values(
+                data = str(int(time.time())),
+                durata = 10,
+                emozioneia =  json.dumps(emoji, indent = 4),
+                emozioneutente =  emojiUser,
+                idtesto = idTesto,
+                idutente = user.idutente,
+                path = filename
+            )
+
+            try:
+                result = session.execute(query)
+
+                print(result)
+
+                if (len(result.inserted_primary_key)) != 1:
+                    print(f'Len: {len(result.inserted_primary_key)}')
+                    return { 'message':'Ops, qualcosa è andato storto'}, 400
+
+                
+                return {'message' : f'File successfully uploaded: {filename}'}, 201
+            except Exception as e:
+                print(e)
+                return { 'message':'Ops, qualcosa è andato storto'}, 400
+
         else:
-            resp = {'message' : 'Allowed file types are m4a, flac, mp3, mp4, wav, wma, aac'}
-            resp.status_code = 400
-            return resp
+            return {'message' : 'Allowed file types are m4a, flac, mp3, mp4, wav, wma, aac'}, 400
 
     def get(self):
 
@@ -188,8 +290,8 @@ class Video(Resource):
 
             return {'message' : f'File successfully uploaded: {filename}'}, 201
         else:
-            resp = {'message' : 'Allowed file types are mp4, mov, avi, flv, mkv, webm'}
-            resp.status_code = 400
+            print(f"{file.filename}")
+            resp = {'message' : 'Allowed file types are mp4, mov, avi, flv, mkv, webm'}, 400
             return resp
 
     def get(self):
@@ -396,6 +498,13 @@ def getUserById(id: str, showPassword: bool):
     except Exception:
         return False
 
+def generateAudioId():
+    id = uuid.uuid4()
+    if getUserById(id, False):
+        return generateUID()
+    else:
+        return id        
+
 def generateUID():
     id = uuid.uuid4()
     if getUserById(id, False):
@@ -444,8 +553,12 @@ api.add_resource(Details, "/api/user") #endpoint to
 api.add_resource(Video, "/api/video") #endpoint to 
 api.add_resource(VideoDetails, "/api/video/play") #endpoint to 
 api.add_resource(Audio, "/api/audio") #endpoint to 
-api.add_resource(AudioDetails, "/api/audio/play") #endpoint to 
+api.add_resource(AudioDetails, "/api/audio/play") #endpoint to
+api.add_resource(Notification, "/api/notification")
 
 if __name__ == '__main__':
     #app.run(host="172.19.161.41")  #uni
+    send_not(messaging, "È l'ora del video!","Registra un video e dicci come ti senti 📽️❤️")
+    thread = Thread(target = scheduleNotification, args = ())
+    thread.start()
     app.run() #casa
