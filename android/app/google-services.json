@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "647921788660",
+    "project_id": "wakeapp-40d0f",
+    "storage_bucket": "wakeapp-40d0f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:647921788660:android:8a5cb4c0ac8dcacffbe0a1",
+        "android_client_info": {
+          "package_name": "com.itsvil.appchallenge.wakeapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "647921788660-g3drp4gaebmkg8ss3ops75odsa0fvb96.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDje8YRmQWPbGPMkg2YHWYWknPpL-dEyPA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "647921788660-g3drp4gaebmkg8ss3ops75odsa0fvb96.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "647921788660-njm3ns10luthpmkl9s6ud09rla6hrsdl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.itsvil.appchallenge.wakeapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

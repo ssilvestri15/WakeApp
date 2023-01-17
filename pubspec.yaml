@@ -39,6 +39,16 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   flutter_camera: ^0.1.1
+  video_player: ^2.4.10
+  path_provider: ^2.0.11
+  flutter_sound: ^9.2.13
+  permission_handler: ^10.2.0
+  audio_session: ^0.1.13
+  firebase_core: ^2.4.1
+  firebase_messaging: ^14.2.1
+  overlay_support: ^2.1.0
+  just_audio: ^0.9.31
+  shared_preferences: ^2.0.16
 
 dev_dependencies:
   flutter_test:
@@ -68,6 +78,15 @@ flutter:
     - assets/images/emoji2.png
     - assets/images/emoji3.png
     - assets/images/emoji4.png
+    - assets/images/racconta.png
+    - assets/images/audio.png
+    - assets/images/pc.png
+    - assets/images/end.png
+    - assets/images/gatto.png
+    - assets/images/audioN.png
+    - assets/images/sorpresa.png
+    - assets/images/felice.png
+    - assets/images/disgusto.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
