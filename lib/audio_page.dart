@@ -220,7 +220,10 @@ class _AudioPageState extends State<AudioPage>{
             ),
             ElevatedButton(
               onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>const InvioUmore()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => InvioUmore(filePath: _mPath))
+                );
               },
               style: ElevatedButton.styleFrom(
                   primary: Color.fromRGBO(235, 155, 121, 1)

@@ -41,7 +41,7 @@ Future<bool> doLogin(String email, String password) async {
 
 }
 
-Future<bool> uploadVideo(String filePath) async {
+Future<bool> uploadVideo(String filePath, String emojiUser) async {
   SharedPreferences pref = await SharedPreferences.getInstance();
   var token = pref.getString('token');
 
@@ -59,6 +59,7 @@ Future<bool> uploadVideo(String filePath) async {
       "POST", Uri.parse(url));
   request.files.add(MultipartFile.fromBytes('file', videoFile.readAsBytesSync(), filename: 'video.mp4')); // TODO: change name
   request.headers.addAll(headers);
+  request.fields['emojiUser'] = emojiUser;
 
   var response = await request.send();
 
@@ -69,7 +70,7 @@ Future<bool> uploadVideo(String filePath) async {
 
 }
 
-Future<bool> uploadAudio(String filePath) async {
+Future<bool> uploadAudio(String filePath, String emojiUser) async {
   SharedPreferences pref = await SharedPreferences.getInstance();
   var token = pref.getString('token');
 
@@ -85,8 +86,9 @@ Future<bool> uploadAudio(String filePath) async {
   File audioFile = File(filePath);
   var request = MultipartRequest(
       "POST", Uri.parse(url));
-  request.files.add(MultipartFile.fromBytes('file', audioFile.readAsBytesSync(), filename: '')); // TODO: change name
+  request.files.add(MultipartFile.fromBytes('file', audioFile.readAsBytesSync(), filename: 'audio.mp4')); // TODO: change name
   request.headers.addAll(headers);
+  request.fields['emojiUser'] = emojiUser;
 
   var response = await request.send();
 
@@ -97,3 +99,12 @@ Future<bool> uploadAudio(String filePath) async {
 
 }
 
+class Emozioni {
+  static String felice = 'felice';
+  static String triste = 'triste';
+  static String arrabbiato = 'arrabbiato';
+  static String disgustato = 'disgustato';
+  static String sorpreso = 'sorpreso';
+  static String neutrale = 'neutrale';
+  static String impaurito = 'impaurito';
+}

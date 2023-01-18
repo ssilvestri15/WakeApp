@@ -105,18 +105,10 @@ class _VideoPageState extends State<VideoPage> {
                           ),
                           ElevatedButton(
                             onPressed: () {
-                              uploadVideo(widget.filePath).then((value) {
-                                if (value) {
-                                  //success
-                                  showDialog(context: context, builder: (context) => const AlertDialog(
-                                    title: Text("Video caricato correttamente"),
-                                  ));
-                                } else {
-                                  showDialog(context: context, builder: (context) => const AlertDialog(
-                                    title: Text("Error"),
-                                  ));
-                                }
-                              });
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => InvioUmore(filePath: widget.filePath))
+                              );
                             },
                             style: ElevatedButton.styleFrom(
                               shape: const StadiumBorder(),

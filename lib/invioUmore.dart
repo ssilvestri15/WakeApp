@@ -2,13 +2,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'api_utils.dart';
+
 class InvioUmore extends StatefulWidget{
-  const InvioUmore({ Key? key}) : super(key: key);
+
+  final String filePath;
+
+  const InvioUmore({ Key? key, required this.filePath}) : super(key: key);
   @override
   _InvioUmoreState createState() => _InvioUmoreState();
 }
 
 class _InvioUmoreState extends State<InvioUmore>{
+
+  late String emojiSelezionata;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,7 +111,20 @@ class _InvioUmoreState extends State<InvioUmore>{
 
               Padding(padding: EdgeInsets.only(top: 50),
               child: ElevatedButton(
-                onPressed: null,
+                onPressed: () {
+                  uploadVideo(widget.filePath, emojiSelezionata).then((value) {
+                    if (value) {
+                      //success
+                      showDialog(context: context, builder: (context) => const AlertDialog(
+                        title: Text("Video caricato correttamente"),
+                      ));
+                    } else {
+                      showDialog(context: context, builder: (context) => const AlertDialog(
+                        title: Text("Error"),
+                      ));
+                    }
+                  });
+                },
                 style: ElevatedButton.styleFrom(
                   shape: const StadiumBorder(),
                   minimumSize: const Size(200, 60),
