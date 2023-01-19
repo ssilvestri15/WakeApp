@@ -27,6 +27,7 @@ class _AudioPageState extends State<AudioPage>{
   bool _mPlayerIsInited = false;
   bool _mRecorderIsInited = false;
   bool _mplaybackReady = false;
+  var filePath; //
   @override
   void initState() {
     _mPlayer!.openPlayer().then((value) {
@@ -108,7 +109,7 @@ class _AudioPageState extends State<AudioPage>{
   void stopRecorder() async {
     await _mRecorder!.stopRecorder().then((value) {
       setState(() {
-        //var url = value;
+        filePath = value;
         _mplaybackReady = true;
       });
     });
@@ -137,6 +138,9 @@ class _AudioPageState extends State<AudioPage>{
       setState(() {});
     });
   }
+
+
+
 
 
   _Fn? getRecorderFn() {
@@ -222,7 +226,7 @@ class _AudioPageState extends State<AudioPage>{
               onPressed: (){
                 Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => InvioUmore(filePath: _mPath))
+                    MaterialPageRoute(builder: (context) => InvioUmore(filePath: filePath, isFromVideo:false))
                 );
               },
               style: ElevatedButton.styleFrom(
@@ -242,6 +246,8 @@ class _AudioPageState extends State<AudioPage>{
       body: makeBody(),
     );
   }
+
+
 }
 
 

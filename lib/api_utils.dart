@@ -52,7 +52,7 @@ Future<bool> uploadVideo(String filePath, String emojiUser) async {
     'Authorization': 'Bearer $token'
   };
 
-  String url = "https://541551c6e2a850.lhr.life/api/video";
+  String url = "https://0eed9b9ef4c533.lhr.life/api/video";
 
   File videoFile = File(filePath);
   var request = MultipartRequest(
@@ -81,15 +81,14 @@ Future<bool> uploadAudio(String filePath, String emojiUser) async {
     'Authorization': 'Bearer $token'
   };
 
-  String url = "https://541551c6e2a850.lhr.life/api/audio";
+  String url = "https://0eed9b9ef4c533.lhr.life/api/audio";
 
   File audioFile = File(filePath);
   var request = MultipartRequest(
       "POST", Uri.parse(url));
   request.files.add(MultipartFile.fromBytes('file', audioFile.readAsBytesSync(), filename: 'audio.mp4')); // TODO: change name
   request.headers.addAll(headers);
-  request.fields['emojiUser'] = emojiUser;
-
+  request.fields['json'] = '{"idTesto":1,"emojiUser": "$emojiUser" }';
   var response = await request.send();
 
   print(response.statusCode);

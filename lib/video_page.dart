@@ -107,7 +107,7 @@ class _VideoPageState extends State<VideoPage> {
                             onPressed: () {
                               Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => InvioUmore(filePath: widget.filePath))
+                                  MaterialPageRoute(builder: (context) => InvioUmore(filePath: widget.filePath, isFromVideo: true,))
                               );
                             },
                             style: ElevatedButton.styleFrom(
