@@ -86,7 +86,7 @@ flutter:
     - assets/images/gatto.png
     - assets/images/audioN.png
     - assets/images/sorpresa.png
-    - assets/images/felice.png
+    - assets/images/impaurito.png
     - assets/images/disgusto.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
