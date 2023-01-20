@@ -271,6 +271,15 @@ class Video(Resource):
         file = request.files['file']
         if file.filename == '':
             return {'message' : 'No file selected for uploading'}, 400
+
+        text = request.form.get('json')
+        if not text or text == '':
+            return {'message' : 'Richiesta non valida'}, 400
+
+        jsonT = json.loads(text)
+        if not jsonT or jsonT == '':
+            return {'message' : 'Richiesta non valida'}, 400
+
         if file and allowed_file_video(file.filename):
             
             token = request.headers.get("Authorization")
@@ -279,16 +288,33 @@ class Video(Resource):
             if not user:
                 return {'message' : 'Token non valido'}, 400
 
-            # TODO
-            # Aggiungere una voce al video al db
-            # prendersi l'idvideo e usarlo come nome file
-            
             filename = videos.save(file, folder=str(user.idutente))
             filename = os.environ.get("UPLOADED_VIDEOS_DEST")+filename
             if not encrypt_file(str(user.key), filename):
                 return { 'message':'Si è verificato un errore'}
 
-            return {'message' : f'File successfully uploaded: {filename}'}, 201
+            emojiIA = analyzeVideo(filename)
+            emojiUser = jsonT["emojiUser"]
+
+            # TODO
+            # Aggiungere una voce al video al db
+            query = insert(models.Video.__table__).values(
+                data = str(int(time.time())),
+                durata = 120,
+                emozioneIA = emojiIA,
+                emozioneUtente = emojiUser,
+                ora = str(int(time.time())),
+                idUtente = user.idutente,
+                path = filename
+            )
+
+            try:
+                result = session.execute(query)
+                if (len(result.inserted_primary_key)) != 1:
+                    return { 'message':'Ops, qualcosa è andato storto'}, 400
+
+                return {'message' : f'File successfully uploaded: {filename}'}, 201
+
         else:
             print(f"{file.filename}")
             resp = {'message' : 'Allowed file types are mp4, mov, avi, flv, mkv, webm'}, 400
