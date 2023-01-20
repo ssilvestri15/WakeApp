@@ -27,7 +27,15 @@ class _AudioPageState extends State<AudioPage>{
   bool _mPlayerIsInited = false;
   bool _mRecorderIsInited = false;
   bool _mplaybackReady = false;
-  var filePath; //
+  var filePath;
+  bool _isAvantiButtonVisible = false;
+
+  void showAvantiButton() {
+    setState(() {
+      _isAvantiButtonVisible = !_isAvantiButtonVisible;
+    });
+  }
+
   @override
   void initState() {
     _mPlayer!.openPlayer().then((value) {
@@ -139,10 +147,6 @@ class _AudioPageState extends State<AudioPage>{
     });
   }
 
-
-
-
-
   _Fn? getRecorderFn() {
     if (!_mRecorderIsInited || !_mPlayer!.isStopped) {
       return null;
@@ -162,82 +166,78 @@ class _AudioPageState extends State<AudioPage>{
     Widget makeBody() {
       return
         Padding(
-          padding: EdgeInsets.only(top: 50, bottom: 50),
-        child:
-          Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                /*SizedBox(           immagine gia con testo, per ora va bene
-                width: 150,
-                child: Text('È il momento della favola',
+          padding: const EdgeInsets.only(top: 80, bottom: 80),
+          child: SingleChildScrollView(
+            child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Image(
+                    width: 240,
+                    image: AssetImage('assets/images/audio.png'),
+                  )
+                ],
+              ),
+              SizedBox(
+                width: 380,
+                child: Text(testo,
                   overflow: TextOverflow.clip,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight:FontWeight.bold,
                     decoration: TextDecoration.none,
                     color: Color.fromRGBO(81, 48, 14, 1),
                   ),
                 ),
-              ),*/
-                Image(
-                  width: 240,
-                  image: AssetImage('assets/images/audio.png'),
-                )
-              ],
-            ),
-            const SizedBox(
-              width: 380,
-              child: Text('Naruto Uzumaki è un ninja dodicenne del Villaggio della Foglia con il sogno di diventare hokage, il ninja più importante del villaggio, allo scopo di essere accettato dagli altri. Naruto infatti ha passato l infanzia nell emarginazione e, durante lo scontro col ninja traditore Mizuki, ne scopre il motivo: dentro di lui è sigillata la Volpe a Nove Code, uno dei nove cercoteri, giganteschi demoni sovrannaturali.',
-                overflow: TextOverflow.clip,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight:FontWeight.bold,
-                  decoration: TextDecoration.none,
-                  color: Color.fromRGBO(81, 48, 14, 1),
+              ),
+
+              Padding(
+                padding: EdgeInsets.only(top: 40, bottom: 40),
+                child: FloatingActionButton.large(
+                  backgroundColor: const Color.fromRGBO(235, 155, 121, 1),
+                  onPressed: getRecorderFn(),
+                  child: Icon(
+                    _mRecorder!.isRecording ? Icons.stop : Icons.mic,
+                    size: 70,
+                    color: const Color.fromRGBO(239, 222, 204, 1),
+                  ),
                 ),
               ),
-            ),
+              ElevatedButton(
+                onPressed: getPlaybackFn(),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromRGBO(235, 155, 121, 1)
+                ),
+                //disabledColor: Colors.grey,
+                child: Text(_mPlayer!.isPlaying ? 'Stop' : 'Ascolta di nuovo'),
+              ),
+              Visibility(
+                visible: _isAvantiButtonVisible,
+                child: ElevatedButton(
+                  onPressed: (){
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => InvioUmore(filePath: filePath, isFromVideo:false))
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromRGBO(235, 155, 121, 1),
+                    shape: const StadiumBorder(),
+                    minimumSize: const Size(150, 40),
+                  ),
+                  //disabledColor: Colors.grey,
+                  child: Text('Avanti'),
+                ),
+              ),
 
-
-            FloatingActionButton.large(
-              backgroundColor: const Color.fromRGBO(235, 155, 121, 1),
-              onPressed: getRecorderFn(),
-              child: Icon(
-                _mRecorder!.isRecording ? Icons.stop : Icons.mic,
-                size: 70,
-                color: const Color.fromRGBO(239, 222, 204, 1),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: getPlaybackFn(),
-              style: ElevatedButton.styleFrom(
-                  primary: Color.fromRGBO(235, 155, 121, 1)
-              ),
-              //disabledColor: Colors.grey,
-              child: Text(_mPlayer!.isPlaying ? 'Stop' : 'Ascolta di nuovo'),
-            ),
-            ElevatedButton(
-              onPressed: (){
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => InvioUmore(filePath: filePath, isFromVideo:false))
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                  primary: Color.fromRGBO(235, 155, 121, 1)
-              ),
-              //disabledColor: Colors.grey,
-              child: Text('Invia'),
-            ),
-          ],
+            ],
+          ),
         )
-          ,);
+        );
     }
 
     return Scaffold(
