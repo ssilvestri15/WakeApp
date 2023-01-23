@@ -2,6 +2,9 @@ import os
 from sqlalchemy import Column, Integer, ForeignKey, Float, Text, MetaData, create_engine
 from sqlalchemy.orm import declarative_base
 from dotenv import load_dotenv
+from sqlalchemy_serializer import SerializerMixin
+from sqlalchemy.orm import class_mapper
+import json
 
 load_dotenv(".flaskenv")
 
@@ -84,7 +87,7 @@ class Audioc(Base):
    def toJson(self):
       return {c.name: getattr(self, c.name) for c in self.__table__.columns}                     
 
-class User(Base):
+class User(Base, SerializerMixin):
 
     __tablename__ = 'utente'
 
@@ -101,7 +104,6 @@ class User(Base):
     tipo = Column(Integer, nullable=False)
 
     def toJson(self):
-       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
-
+      return self.to_dict()
 
 metadata.create_all(engine)

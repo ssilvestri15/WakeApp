@@ -32,3 +32,5 @@ def analyzeVideo(filename):
     print(topEmotion)
     return topEmotion
 
+if __name__ == "__main__":
+    analyzeVideo('C:\\Users\\silve\\Downloads\\test.MOV')
