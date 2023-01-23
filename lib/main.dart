@@ -63,8 +63,9 @@ Future<void> main() async {
     debugShowCheckedModeBanner: false,
     theme: ThemeData(
       primaryColor: const Color.fromRGBO(81, 48, 14, 1),
+      fontFamily: 'Montserrat'
     ),
-    home: const Home(),
+    home: const NotificaPage(),
     routes: {
       'login': (context) => const Login(),
     },
