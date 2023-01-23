@@ -1,6 +1,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'api_utils.dart';
 
@@ -24,6 +25,16 @@ class _InvioUmoreState extends State<InvioUmore>{
   Color _favIconColor5 = Color.fromRGBO(226, 214, 255, 1);
   Color _favIconColor6 = Color.fromRGBO(226, 214, 255, 1);
   Color _favIconColor7 = Color.fromRGBO(226, 214, 255, 1);
+
+  void removeAudioNotification() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('audioBackgroundNotification');
+  }
+
+  void removeVideoNotification() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('videoBackgroundNotification');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -280,6 +291,7 @@ class _InvioUmoreState extends State<InvioUmore>{
                               uploadVideo(widget.filePath, emojiSelezionata).then((value) {
                                 if (value) {
                                   //success
+                                  removeVideoNotification();
                                   showDialog(context: context, builder: (context) => const AlertDialog(
                                     title: Text("Video caricato correttamente"),
                                   ));
@@ -296,6 +308,7 @@ class _InvioUmoreState extends State<InvioUmore>{
                               uploadAudio(widget.filePath, emojiSelezionata).then((value) {
                                 if (value) {
                                   //success
+                                  removeAudioNotification();
                                   showDialog(context: context, builder: (context) => const AlertDialog(
                                     title: Text("Audio caricato correttamente"),
                                   ));
