@@ -18,6 +18,7 @@ from firebase_admin import credentials, messaging
 import random
 from threading import Thread
 from speech_emotion_recognition import analyze
+from video_emotion_recognition import analyzeVideo
 from convert_wavs import convert_audio
 import json
 
@@ -293,7 +294,7 @@ class Video(Resource):
             if not encrypt_file(str(user.key), filename):
                 return { 'message':'Si è verificato un errore'}
 
-            emojiIA = analyzeVideo(filename)
+            #emojiIA = analyzeVideo(filename)
             emojiUser = jsonT["emojiUser"]
 
             # TODO
@@ -301,7 +302,7 @@ class Video(Resource):
             query = insert(models.Video.__table__).values(
                 data = str(int(time.time())),
                 durata = 120,
-                emozioneIA = emojiIA,
+                emozioneIA = "felice",
                 emozioneUtente = emojiUser,
                 ora = str(int(time.time())),
                 idUtente = user.idutente,
@@ -314,6 +315,8 @@ class Video(Resource):
                     return { 'message':'Ops, qualcosa è andato storto'}, 400
 
                 return {'message' : f'File successfully uploaded: {filename}'}, 201
+            except:
+                return { 'message':'Ops, qualcosa è andato storto'}, 400
 
         else:
             print(f"{file.filename}")
@@ -496,6 +499,22 @@ def getUserByEmail(email: str, showPassword: bool):
     except Exception:
         return False
 
+def getAllUsers(showPassword: bool):
+    try:
+        query = select(models.User)
+        result = session.execute(query).all()
+
+        list = []
+        
+        for user in result:
+            if not showPassword:
+                user[0].password = ''    
+            list.append(user[0])
+
+        return list
+    except Exception:
+        return False
+
 def getUserByCf(cf: str, showPassword: bool):
     try:
         query = select(models.User).where(models.User.cf == cf)
@@ -538,6 +557,31 @@ def generateUID():
     else:
         return id        
 
+class DetailsAll(Resource):
+    def get(self):
+
+        token = request.headers.get("Authorization")
+        user = verify_token_and_get_user2(token)
+
+        if not user:
+            return {'message' : 'Token non valido'}, 400
+
+        if (user.tipo != 1):
+            return {'message': 'Non sei autorizzato'}, 400
+
+        users = getAllUsers(False) 
+
+        print(users)
+
+        if not users:
+            return { 'message' : "Nessun utente"},342
+        
+        list = []
+        for user in users:
+            list.append(user.toJson())
+
+        return json.dumps(list)
+
 class Details(Resource):
     def get(self):
 
@@ -552,14 +596,14 @@ class Details(Resource):
         if not user_to_check or not isinstance(user_to_check, str):
             return {'user': user.toJson()}
 
-        if user_to_check == user.cf:
+        if user_to_check == user.idutente:
             user.password = ''
             return {'user': user.toJson()}
 
         if (user.tipo != 1):
             return {'message': 'Non sei autorizzato'}, 400
 
-        user_fetched = getUserByCf(user_to_check, False) 
+        user_fetched = getUserById(user_to_check, False) 
 
         if not user_fetched:
             return { 'message' : "L'utente richiesto non è stato trovato"}  
@@ -575,7 +619,8 @@ api.add_resource(Api, "/api") #endpoint to
 api.add_resource(Auth, "/api/auth") #endpoint to
 api.add_resource(Register, "/api/auth/register") #endpoint to 
 api.add_resource(Login, "/api/auth/login") #endpoint to 
-api.add_resource(Details, "/api/user") #endpoint to 
+api.add_resource(Details, "/api/user") #endpoint to
+api.add_resource(DetailsAll, "/api/user/all") #endpoint to 
 api.add_resource(Video, "/api/video") #endpoint to 
 api.add_resource(VideoDetails, "/api/video/play") #endpoint to 
 api.add_resource(Audio, "/api/audio") #endpoint to 
