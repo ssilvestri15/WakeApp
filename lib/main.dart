@@ -15,12 +15,28 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("Handling a background message -> ${message.notification?.title}:${message.notification?.body}");
+
+  saveNotificationDate(message);
+
+}
+
+void saveNotificationDate(RemoteMessage message) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String todayDate = DateTime.now().toString();
+  var title = message.notification?.title ?? '';
+  if (title.contains('video')) {
+    prefs.setString('videoBackgroundNotification', todayDate);
+  } else if (title.contains('audio')) {
+    prefs.setString('audioBackgroundNotification', todayDate);
+  }
 }
 
 Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //prefs.remove('videoBackgroundNotification');
+  //prefs.remove('audioBackgroundNotification');
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -47,8 +63,9 @@ Future<void> main() async {
     debugShowCheckedModeBanner: false,
     theme: ThemeData(
       primaryColor: const Color.fromRGBO(81, 48, 14, 1),
+      fontFamily: 'Montserrat'
     ),
-    home: const  InvioUmore(filePath: 'filePath', isFromVideo: true),
+    home: const NotificaPage(),
     routes: {
       'login': (context) => const Login(),
     },

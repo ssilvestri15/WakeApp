@@ -32,7 +32,6 @@ class _NotificaPageState extends State<NotificaPage>{
                   //overflow: TextOverflow.clip,
                   style: TextStyle(
                     fontSize: 20,
-                    fontWeight:FontWeight.normal,
                     decoration: TextDecoration.none,
                     color: Color.fromRGBO(81, 48, 14, 1),
                   ),
