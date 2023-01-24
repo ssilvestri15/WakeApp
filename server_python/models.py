@@ -15,17 +15,17 @@ database_url = os.environ.get("DATABASE_URL")
 
 engine = create_engine(database_url, isolation_level="AUTOCOMMIT")
 
-class TestoDaLeggere(Base):
+class TestoDaLeggere(Base, SerializerMixin):
    __tablename__ = 'testoDaLeggere'
 
    idTesto = Column(Text, primary_key=True, nullable=False)
    testo = Column(Text, nullable=False)
 
    def toJson(self):
-      return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+      return self.to_dict()    
 
 
-class ParametriVitali(Base):
+class ParametriVitali(Base, SerializerMixin):
    __tablename__ = 'parametriVitali'
 
    id = Column(Integer, primary_key=True, nullable=False)
@@ -40,9 +40,9 @@ class ParametriVitali(Base):
    idUtente = Column(Text, ForeignKey('utente.idutente'), nullable=False)
 
    def toJson(self):
-      return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+      return self.to_dict()    
 
-class ParametriAmbientali(Base):
+class ParametriAmbientali(Base, SerializerMixin):
    __tablename__ = 'parametriAmbientali'
 
    id = Column(Integer, primary_key=True, nullable=False)
@@ -55,9 +55,9 @@ class ParametriAmbientali(Base):
    idUtente = Column(Text, ForeignKey('utente.idutente'), nullable=False)
 
    def toJson(self):
-      return {c.name: getattr(self, c.name) for c in self.__table__.columns} 
+      return self.to_dict()
 
-class Video(Base):
+class Video(Base, SerializerMixin):
    __tablename__ = 'video'
 
    idVideo = Column(Integer, primary_key=True, nullable=False, autoincrement = True)
@@ -70,9 +70,9 @@ class Video(Base):
    path = Column(Text, nullable=False)
 
    def toJson(self):
-      return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+      return self.to_dict()
 
-class Audioc(Base):
+class Audioc(Base, SerializerMixin):
    __tablename__ = 'audio'
 
    idaudio = Column(Integer, primary_key=True, nullable=False, autoincrement = True)
@@ -85,7 +85,7 @@ class Audioc(Base):
    path = Column(Text, nullable=False)
 
    def toJson(self):
-      return {c.name: getattr(self, c.name) for c in self.__table__.columns}                     
+      return self.to_dict()                
 
 class User(Base, SerializerMixin):
 

@@ -173,7 +173,7 @@ class Audio(Resource):
             emojiUser = jsonT["emojiUser"]
 
             query = insert(models.Audioc.__table__).values(
-                data = str(int(time.time())),
+                data = str(time.time().strftime("%d/%m/%Y")),
                 durata = 10,
                 emozioneia =  json.dumps(emoji, indent = 4),
                 emozioneutente =  emojiUser,
@@ -225,17 +225,16 @@ class Audio(Resource):
 
         lista_audio = getAudiosByUserId(user_fetched.idutente)
 
-        if not lista_audio:
-            return { 'message': "Si è verificato un errore" }
-
         if (len(lista_audio) == 0):
-            return { 'message':'Nessun audio' }
+            return []
 
-        # TODO
-        # ritornare lista audio
+        list = []
+        for audio in lista_audio:
+            list.append(audio.toJson())
 
-        return 'ok'
-          
+        print(list)
+
+        return list          
 
 class VideoDetails(Resource):
     def get(self):
@@ -348,16 +347,14 @@ class Video(Resource):
 
         lista_video = getVideosByUserId(user_fetched.idutente)
 
-        if not lista_video:
-            return { 'message': "Si è verificato un errore" }
-
         if (len(lista_video) == 0):
-            return { 'message':'Nessun video' }
+            return []
+        
+        list = []
+        for video in lista_video:
+            list.append(video.toJson())
 
-        # TODO
-        # ritornare lista video
-
-        return 'ok'
+        return list
           
 def getVideosByUserId(id):
     try:
@@ -369,7 +366,7 @@ def getVideosByUserId(id):
             list.append(row[0])
         return list
     except Exception:
-        return False
+        return []
 
 def getAudiosByUserId(id):
     try:
@@ -381,7 +378,7 @@ def getAudiosByUserId(id):
             list.append(row[0])
         return list
     except Exception:
-        return False
+        return []
 
 class Register(Resource):
     def post(self):
@@ -580,7 +577,7 @@ class DetailsAll(Resource):
         for user in users:
             list.append(user.toJson())
 
-        return json.dumps(list)
+        return list
 
 class Details(Resource):
     def get(self):
@@ -594,12 +591,14 @@ class Details(Resource):
         user_to_check = request.args.get('user_id')
 
         if not user_to_check or not isinstance(user_to_check, str):
-            return {'user': user.toJson()}
+            print(user.toJson())
+            return user.toJson()
 
         if user_to_check == user.idutente:
             user.password = ''
-            return {'user': user.toJson()}
-
+            print(user.toJson())
+            return user.toJson()
+        
         if (user.tipo != 1):
             return {'message': 'Non sei autorizzato'}, 400
 
@@ -608,6 +607,7 @@ class Details(Resource):
         if not user_fetched:
             return { 'message' : "L'utente richiesto non è stato trovato"}  
 
+        print(user_fetched.toJson())
         return user_fetched.toJson()
                 
     
@@ -631,5 +631,6 @@ if __name__ == '__main__':
     #app.run(host="172.19.161.41")  #uni
     send_not(messaging, "È l'ora del video!","Registra un video e dicci come ti senti 📽️❤️")
     thread = Thread(target = scheduleNotification, args = ())
+    thread.daemon = True
     thread.start()
     app.run() #casa
