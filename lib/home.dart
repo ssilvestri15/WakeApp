@@ -88,9 +88,9 @@ class _HomeState extends State<Home> {
       backgroundColor: const Color.fromRGBO(254, 227, 192, 1),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.only(bottom: 50, top: 50),
+          padding: const EdgeInsets.only(bottom: 50, top: 100),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
                const Padding(
@@ -109,7 +109,7 @@ class _HomeState extends State<Home> {
                       fontWeight:FontWeight.normal,
                     ),),
                   ),
-                  Text('Rilassati e goditi la vita', style:
+                  Text('Rilassati e attendi la notifica', style:
                   TextStyle(
                     fontSize: 20,
                     fontWeight:FontWeight.normal,
