@@ -2,8 +2,6 @@ import random
 import models
 import uuid
 from datetime import datetime
-from flask import Flask
-from flask_bcrypt import Bcrypt
 from sqlalchemy import select, insert
 from sqlalchemy.orm import sessionmaker
 from faker import Faker
@@ -20,8 +18,6 @@ fakeLastNames = [fake.unique.last_name() for i in range(50)]
 
 generatedName = []
 
-app = Flask(__name__)
-bcrypt = Bcrypt(app)
 
 class Person:
   def __init__(self, name, lastname, gender):
@@ -76,7 +72,7 @@ def genDateOfBirth():
     return f"{random.randrange(1, 28)}/{random.randrange(1, 12)}/{random.randrange(1911,CurrentTime.year-18)}"
 
 
-def populate(num):
+def populate(num, bcrypt):
 
     added = 0
     for _ in range(0,num):
@@ -114,7 +110,6 @@ def populate(num):
 
         except:
             continue
-
 
 
 if __name__ == '__main__':

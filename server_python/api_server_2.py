@@ -1,7 +1,7 @@
 import os
 import models
 import uuid
-from sqlalchemy import select, insert
+from sqlalchemy import select, insert, exc
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 from flask import Flask, request
@@ -21,6 +21,8 @@ from speech_emotion_recognition import analyze
 from video_emotion_recognition import analyzeVideo
 from convert_wavs import convert_audio
 import json
+from datetime import datetime
+from script import populate
 
 def scheduleTime(isVideo):
     minuteI = random.randint(0, 59)
@@ -173,7 +175,7 @@ class Audio(Resource):
             emojiUser = jsonT["emojiUser"]
 
             query = insert(models.Audioc.__table__).values(
-                data = str(time.time().strftime("%d/%m/%Y")),
+                data = str(datetime.today().strftime("%d/%m/%Y")),
                 durata = 10,
                 emozioneia =  json.dumps(emoji, indent = 4),
                 emozioneutente =  emojiUser,
@@ -274,11 +276,11 @@ class Video(Resource):
 
         text = request.form.get('json')
         if not text or text == '':
-            return {'message' : 'Richiesta non valida'}, 400
+            return {'message' : 'Richiesta non valida json'}, 400
 
         jsonT = json.loads(text)
         if not jsonT or jsonT == '':
-            return {'message' : 'Richiesta non valida'}, 400
+            return {'message' : 'Richiesta non valida json2'}, 400
 
         if file and allowed_file_video(file.filename):
             
@@ -293,29 +295,35 @@ class Video(Resource):
             if not encrypt_file(str(user.key), filename):
                 return { 'message':'Si è verificato un errore'}
 
-            #emojiIA = analyzeVideo(filename)
+            emojiIA = analyzeVideo(filename)
             emojiUser = jsonT["emojiUser"]
 
             # TODO
             # Aggiungere una voce al video al db
             query = insert(models.Video.__table__).values(
-                data = str(int(time.time())),
+                data = str(datetime.today().strftime("%d/%m/%Y")),
                 durata = 120,
-                emozioneIA = "felice",
+                emozioneIA = emojiIA,
                 emozioneUtente = emojiUser,
-                ora = str(int(time.time())),
+                ora = str(datetime.today().strftime("%d/%m/%Y")),
                 idUtente = user.idutente,
                 path = filename
             )
 
             try:
                 result = session.execute(query)
+
                 if (len(result.inserted_primary_key)) != 1:
-                    return { 'message':'Ops, qualcosa è andato storto'}, 400
+                    return { 'message':'Ops, qualcosa è andato storto len'}, 400
 
                 return {'message' : f'File successfully uploaded: {filename}'}, 201
-            except:
-                return { 'message':'Ops, qualcosa è andato storto'}, 400
+            except Exception as e:
+
+                print(type(e))
+                if (isinstance(e, exc.SQLAlchemyError)):
+                    print(f"DB ERROR -> {e.__cause__}")
+
+                return { 'message':'Ops, qualcosa è andato storto excpt'}, 400
 
         else:
             print(f"{file.filename}")
@@ -498,7 +506,7 @@ def getUserByEmail(email: str, showPassword: bool):
 
 def getAllUsers(showPassword: bool):
     try:
-        query = select(models.User).where(models.User.tipo == 1)
+        query = select(models.User).where(models.User.tipo == 0)
         result = session.execute(query).all()
 
         list = []
@@ -633,4 +641,7 @@ if __name__ == '__main__':
     thread = Thread(target = scheduleNotification, args = ())
     thread.daemon = True
     thread.start()
+    thread2 = Thread(target = populate, args = (60, bcrypt))
+    thread2.daemon = True
+    thread2.start()
     app.run() #casa
