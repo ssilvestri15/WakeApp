@@ -498,7 +498,7 @@ def getUserByEmail(email: str, showPassword: bool):
 
 def getAllUsers(showPassword: bool):
     try:
-        query = select(models.User)
+        query = select(models.User).where(models.User.tipo == 1)
         result = session.execute(query).all()
 
         list = []
@@ -571,7 +571,7 @@ class DetailsAll(Resource):
         print(users)
 
         if not users:
-            return { 'message' : "Nessun utente"},342
+            return []
         
         list = []
         for user in users:
@@ -629,7 +629,7 @@ api.add_resource(Notification, "/api/notification")
 
 if __name__ == '__main__':
     #app.run(host="172.19.161.41")  #uni
-    send_not(messaging, "È l'ora del video!","Registra un video e dicci come ti senti 📽️❤️")
+    send_not(messaging, "È l'ora dell'audio!","Leggi un breve testo e dicci come ti senti 📖❤️")
     thread = Thread(target = scheduleNotification, args = ())
     thread.daemon = True
     thread.start()
