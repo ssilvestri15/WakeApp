@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 
+const String URL = 'https://14f3adc1fdd864.lhr.life';
+
 Future<bool> doLogin(String email, String password) async {
   try {
     Map data = {
@@ -12,8 +14,7 @@ Future<bool> doLogin(String email, String password) async {
     };
     var body = jsonEncode(data);
 
-    //URL da cambiare ogni volta
-    String url = "https://ac2a34ce064144.lhr.life/api/auth/login";
+    String url = "$URL/api/auth/login";
 
     Response response = await post(
         Uri.parse(url),
@@ -52,7 +53,7 @@ Future<bool> uploadVideo(String filePath, String emojiUser) async {
     'Authorization': 'Bearer $token'
   };
 
-  String url = "https://0eed9b9ef4c533.lhr.life/api/video";
+  String url = "$URL/api/video";
 
   File videoFile = File(filePath);
   var request = MultipartRequest(
@@ -61,12 +62,16 @@ Future<bool> uploadVideo(String filePath, String emojiUser) async {
   request.headers.addAll(headers);
   request.fields['emojiUser'] = emojiUser;
 
-  var response = await request.send();
+  try {
+    var response = await request.send();
 
-  print(response.statusCode);
-  print(await response.stream.bytesToString());
+    print(response.statusCode);
+    print(await response.stream.bytesToString());
 
-  return response.statusCode == 201;
+    return response.statusCode == 201;
+  } catch (e) {
+    return false;
+  }
 
 }
 
@@ -81,7 +86,7 @@ Future<bool> uploadAudio(String filePath, String emojiUser) async {
     'Authorization': 'Bearer $token'
   };
 
-  String url = "https://0eed9b9ef4c533.lhr.life/api/audio";
+  String url = "$URL/api/audio";
 
   File audioFile = File(filePath);
   var request = MultipartRequest(
@@ -89,12 +94,17 @@ Future<bool> uploadAudio(String filePath, String emojiUser) async {
   request.files.add(MultipartFile.fromBytes('file', audioFile.readAsBytesSync(), filename: 'audio.mp4')); // TODO: change name
   request.headers.addAll(headers);
   request.fields['json'] = '{"idTesto":1,"emojiUser": "$emojiUser" }';
-  var response = await request.send();
 
-  print(response.statusCode);
-  print(await response.stream.bytesToString());
+  try {
+    var response = await request.send();
 
-  return response.statusCode == 201;
+    print(response.statusCode);
+    print(await response.stream.bytesToString());
+
+    return response.statusCode == 201;
+  } catch (e){
+    return false;
+  }
 
 }
 
