@@ -20,7 +20,7 @@ class AudioPage extends StatefulWidget {
 }
 class _AudioPageState extends State<AudioPage>{
   String t1 = 'Naruto Uzumaki è un ninja dodicenne del Villaggio della Foglia con il sogno di diventare hokage, il ninja più importante del villaggio, allo scopo di essere accettato dagli altri. Naruto infatti ha passato l infanzia nell emarginazione e, durante lo scontro col ninja traditore Mizuki, ne scopre il motivo: dentro di lui è sigillata la Volpe a Nove Code, uno dei nove cercoteri, giganteschi demoni sovrannaturali. A seguito della promozione all accademia ninja Naruto entra a far parte, insieme a Sasuke Uchiha e Sakura Haruno, del gruppo 7, sotto la guida del maestro Kakashi Hatake. Dopo varie avventure, Sasuke decide di abbandonare il Villaggio della Foglia per allenarsi con Orochimaru, allo scopo di ottenere il potere necessario per uccidere il fratello Itachi e vendicare il suo clan, da lui apparentemente sterminato senza un chiaro movente';
-  String t2 = 'Quando la terra è d\'ombre ricopertae soffia il vento, e in su l\'arene estreme l\'onda va e vienche mormorando geme e appar la luna tra le nubi incerta ....';
+  String t2 = 'Quando la terra è d\'ombre ricoperta e soffia il vento, e in su l\'arene estreme l\'onda va e vienche mormorando geme e appar la luna tra le nubi incerta ....';
   String t3 = 'Il maestro Jedi Qui-Gon Jinn e il suo padawan Obi-Wan Kenobi vengono inviati sul pianeta Naboo per mediare una disputa tra la Repubblica Galattica e la corrotta Federazione dei Mercanti, alle dipendenze del Signore Oscuro dei Sith Darth Sidious. Dopo il fallimento della mediazione, incrociano un gungan di nome Jar Jar Binks e decidono di aiutare la regina Padmé Amidala a lasciare il pianeta per denunciare la crisi al Senato della Repubblica. A causa di un guasto all\'iperpropulsore, il gruppo deve atterrare sul pianeta desertico Tatooine, dove incontra Anakin Skywalker, uno schiavo di nove anni, che Qui-Gon crede essere il Prescelto, destinato a portare equilibrio nella Forza. Dopo aver riscattato la propria libertà in una gara di sgusci, Anakin lascia il pianeta insieme al gruppo, diretto verso la capitale della Repubblica, Coruscant. Tornati a Naboo, ormai teatro di battaglia tra la popolazione del pianeta e la Federazione, Qui-Gon viene ucciso nello scontro col Sith Darth Maul, che poco dopo viene sconfitto da Obi-Wan. Il padawan promette al maestro morente di addestrare Anakin affinché diventi un Jedi, nonostante il consiglio Jedi, guidato da Yoda, abbia delle riserve sul ragazzo. Pochi giorni dopo, Obi-Wan e Anakin vengono accolti come eroi su Naboo, onorati da Amidala e dal nuovo cancelliere della Repubblica, Palpatine.';
   String t4 = 'Monkey D. Rufy è un giovane pirata sognatore che da piccolo ha involontariamente mangiato un frutto del diavolo, diventando così un uomo di gomma con la capacità di allungarsi e deformarsi a piacimento. Con l\'obiettivo di diventare il Re dei pirati e di ritrovare il leggendario tesoro One Piece , nascosto secondo le leggende da Gol D. Roger sull\'isola di Raftel alla fine della Rotta Maggiore, Rufy si mette in mare e riunisce intorno a sé una ciurma. Entrano così a far parte della ciurma di Cappello di paglia: Roronoa Zoro, un tenace spadaccino dalla particolare tecnica a tre spade; Nami, una furba ladra, ma soprattutto abile navigatrice; Usop, un cecchino pavido e bugiardo; Sanji, un cuoco galantuomo con un debole per le donne; TonyTony Chopper, una renna antropomorfa e medico di bordo; Nico Robin, un\'archeologa che desidera fare luce su un periodo oscuro della storia del mondo; Franky, un carpentiere cyborg; Brook, uno scheletro musicista e schermidore, e Jinbe, uomo-pesce ex membro della Flotta dei Sette ed esperto timoniere. Nel loro viaggio attraverso il Mare Orientale e la prima parte della Rotta Maggiore Rufy e compagni vivono numerose avventure, trovano alleati e affrontano avversari pirati o della Marina che intendono fermarli. Giunti alle Isole Sabaody attirano tuttavia l\'attenzione della Marina e i membri della ciurma vengono divisi e spediti in destinazioni diverse. Rufy scopre quindi che suo fratello Portuguese D. Ace è stato catturato dalla Marina, che intende giustiziarlo, e si prodiga per salvarlo irrompendo nella prigione di Impel Down e nella base di Marineford, pur senza riuscirci.';
   String t5 = 'Ma un giorno finalmente vennero a dirmi che mia moglie era stata assalita dalle doglie, e che corressi subito a casa. Scappai come un dàino: ma più per sfuggire a me stesso, per non rimanere neanche un minuto a tu per tu con me, a pensare che io stavo per avere un figliuolo, io, in quelle condizioni, un figliuolo! Appena arrivato alla porta di casa, mia suocera m’afferrò per le spalle e mi fece girar su me stesso: – Un medico! Scappa! Romilda muore! Viene da restare, no? a una siffatta notizia a bruciapelo. E invece, « Correte! ». Non mi sentivo più le gambe; non sapevo più da qual parte pigliare; e mentre correvo, non so come, – Un medico! un medico! – andavo dicendo; e la gente si fermava per via, e pretendeva che mi fermassi anch’io a spiegare che cosa mi fosse accaduto; mi sentivo tirar per le maniche, mi vedevo di fronte facce pallide, costernate; scansavo, scansavo tutti: – Un medico! un medico! E il medico intanto era la, già a casa mia. Quando trafelato, in uno stato miserando, dopo aver girato tutte le farmacie, rincasai, disperato e furibondo, la prima bambina era già nata; si stentava a far venir l’altra alla luce. – Due!';
@@ -37,7 +37,7 @@ class _AudioPageState extends State<AudioPage>{
   var filePath;
   bool _isAvantiButtonVisible = false;
   List<String> testi = [];
-  int random = 0;
+  int random = -1;
   Random r = new Random();
 
   void showAvantiButton() {
@@ -183,13 +183,14 @@ class _AudioPageState extends State<AudioPage>{
 
   @override
   Widget build(BuildContext context) {
-    random = r.nextInt(7);
+    if(random == -1) {
+      random = r.nextInt(7);
+    }
     Widget makeBody() {
       return
         Padding(
           padding: const EdgeInsets.only(top: 80, bottom: 80),
-          child: SingleChildScrollView(
-            child: Column(
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -198,81 +199,93 @@ class _AudioPageState extends State<AudioPage>{
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: const [
                   Image(
-                    width: 240,
+                    width: 220,
                     image: AssetImage('assets/images/audio.png'),
                   )
                 ],
               ),
               SizedBox(
                 width: 380,
-                child: Text(testi[random],
-                  overflow: TextOverflow.clip,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight:FontWeight.bold,
-                    decoration: TextDecoration.none,
-                    color: Color.fromRGBO(81, 48, 14, 1),
+                height: 300,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Text(testi[random],
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight:FontWeight.bold,
+                      decoration: TextDecoration.none,
+                      color: Color.fromRGBO(81, 48, 14, 1),
+                    ),
                   ),
                 ),
               ),
 
               Padding(
-                padding: EdgeInsets.only(top: 40, bottom: 40),
+                padding: EdgeInsets.only(top: 30, bottom: 30),
                 child: FloatingActionButton.large(
                   backgroundColor: const Color.fromRGBO(235, 155, 121, 1),
                   onPressed: getRecorderFn(),
                   child: Icon(
                     _mRecorder!.isRecording ? Icons.stop : Icons.mic,
-                    size: 70,
+                    size: 50,
                     color: const Color.fromRGBO(239, 222, 204, 1),
                   ),
                 ),
               ),
 
-
-
               Visibility(
-                visible: _isAvantiButtonVisible,
-                child:  Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(padding: EdgeInsets.only(right: 30),
-                    child: ElevatedButton(
-                      onPressed: getPlaybackFn(),
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromRGBO(235, 155, 121, 1),
+                  visible: _isAvantiButtonVisible,
+                  child:  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(padding: EdgeInsets.only(right: 30),
+                          child: ElevatedButton(
+                            onPressed: getPlaybackFn(),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color.fromRGBO(235, 155, 121, 1),
+                              shape: const StadiumBorder(),
+                              minimumSize: const Size(150, 40),
+                            ),
+                            //disabledColor: Colors.grey,
+                            child: Text(_mPlayer!.isPlaying ? 'Stop' : 'Ascolta',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 23,
+                              ),
+                            ),
+                          )
+                      ),
+                      ElevatedButton(
+                        onPressed: (){
+                          stopPlayer();
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => InvioUmore(filePath: filePath, isFromVideo:false))
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color.fromRGBO(235, 155, 121, 1),
                           shape: const StadiumBorder(),
                           minimumSize: const Size(150, 40),
+                        ),
+                        //disabledColor: Colors.grey,
+                        child:  const Text('Avanti',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 23,
+                          ),
+                        ),
                       ),
-                      //disabledColor: Colors.grey,
-                      child: Text(_mPlayer!.isPlaying ? 'Stop' : 'Ascolta di nuovo'),
-                    )
-                    ),
-                    ElevatedButton(
-                      onPressed: (){
-                        stopPlayer();
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => InvioUmore(filePath: filePath, isFromVideo:false))
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color.fromRGBO(235, 155, 121, 1),
-                        shape: const StadiumBorder(),
-                        minimumSize: const Size(150, 40),
-                      ),
-                      //disabledColor: Colors.grey,
-                      child: Text('Avanti'),
-                    ),
 
-                  ],
-                )
+                    ],
+                  )
               ),
 
             ],
           ),
-        )
         );
     }
 

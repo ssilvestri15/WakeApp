@@ -23,7 +23,7 @@ class _EndPageState extends State<EndPage>{
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children:  [
-                Padding(padding: EdgeInsets.only(bottom: 150),
+                const Padding(padding: EdgeInsets.only(bottom: 150),
                   child: Image(
                     width: 323,
                     image: AssetImage('assets/images/end.png'),
@@ -36,7 +36,7 @@ class _EndPageState extends State<EndPage>{
                   },
                   style: ElevatedButton.styleFrom(
                     shape: const StadiumBorder(),
-                    minimumSize: const Size(200, 60),
+                    minimumSize: const Size(150, 40),
                     backgroundColor:  Colors.orange,
                   ),
                   child: const Text('Esci',
