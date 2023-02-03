@@ -106,13 +106,13 @@ class _HomeState extends State<Home> {
                     child: Text('Non è ancora il momento', style:
                     TextStyle(
                       fontSize: 30,
-                      fontWeight:FontWeight.normal,
+                      fontWeight:FontWeight.w600,
                     ),),
                   ),
                   Text('Rilassati e attendi la notifica', style:
                   TextStyle(
                     fontSize: 20,
-                    fontWeight:FontWeight.normal,
+                    fontWeight:FontWeight.w500,
                   ),),
                 ],
               ),

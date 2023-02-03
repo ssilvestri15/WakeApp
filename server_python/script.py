@@ -75,18 +75,22 @@ def genDateOfBirth():
 
 
 
+
+
+
 def populate(num, bcrypt):
 
     added = 0
     for _ in range(0,num):
 
+        person = generateFakePerson()
+        idutente = generateUID()
+        encrypted = bcrypt.generate_password_hash("simo").decode('utf-8')
+        key = (Fernet.generate_key()).decode('utf-8')
+        data = genDateOfBirth()
+        city = fake.state()
+
         try:
-            person = generateFakePerson()
-            idutente = generateUID()
-            encrypted = bcrypt.generate_password_hash(str("simo")).decode('utf-8')
-            key = (Fernet.generate_key()).decode('utf-8')
-            data = genDateOfBirth()
-            city = fake.state()
 
             query = insert(models.User.__table__).values(
                 idutente = idutente,
@@ -108,7 +112,7 @@ def populate(num, bcrypt):
                 pass
 
             added += 1
-            print(f"{added}. Aggiunto l'utente {person.fullname} con id {idutente} e password {encrypted} ")
+            print(f"{added}. Aggiunto l'utente {person.fullname} con id: {idutente}")
 
         except:
             continue

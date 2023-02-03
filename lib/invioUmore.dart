@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'api_utils.dart';
+import 'end_page.dart';
 
 class InvioUmore extends StatefulWidget{
 
@@ -16,7 +17,7 @@ class InvioUmore extends StatefulWidget{
 
 class _InvioUmoreState extends State<InvioUmore>{
 
-  late String emojiSelezionata;
+  String emojiSelezionata = "null";
   bool isSending = false;
   Color _favIconColor1 = Color.fromRGBO(226, 214, 255, 1);
   Color _favIconColor2 = Color.fromRGBO(226, 214, 255, 1);
@@ -283,6 +284,14 @@ class _InvioUmoreState extends State<InvioUmore>{
                       Padding(padding: EdgeInsets.only(top: 50),
                         child: ElevatedButton(
                           onPressed: () {
+
+                            if (emojiSelezionata == "null") {
+                              showDialog(context: context, builder: (context) => const AlertDialog(
+                                title: Text("Attenzione, seleziona una emoji!"),
+                              ));
+                              return;
+                            }
+
                             setState(() {
                               isSending = true;
                             });
@@ -292,9 +301,10 @@ class _InvioUmoreState extends State<InvioUmore>{
                                 if (value) {
                                   //success
                                   removeVideoNotification();
-                                  showDialog(context: context, builder: (context) => const AlertDialog(
-                                    title: Text("Video caricato correttamente"),
-                                  ));
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => EndPage())
+                                  );
                                 } else {
                                   setState(() {
                                     isSending = false;
@@ -309,9 +319,10 @@ class _InvioUmoreState extends State<InvioUmore>{
                                 if (value) {
                                   //success
                                   removeAudioNotification();
-                                  showDialog(context: context, builder: (context) => const AlertDialog(
-                                    title: Text("Audio caricato correttamente"),
-                                  ));
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => EndPage())
+                                  );
                                 } else {
                                   setState(() {
                                     isSending = false;
