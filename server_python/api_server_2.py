@@ -23,6 +23,7 @@ from convert_wavs import convert_audio
 import json
 from datetime import datetime
 from script import populate
+from deepface import deepface
 
 def scheduleTime(isVideo):
     minuteI = random.randint(0, 59)
@@ -461,7 +462,9 @@ class Login(Resource):
              return {'message' : 'Ops, si è verificato un errore'}, 400
         
         user = result[0][0]
-        print(user.password)
+        print(f"0. {user.email}")
+        print(f"1. {user.password}")
+        print(f"2. {password}")
         if not bcrypt.check_password_hash(user.password, password):
             return {'message' : 'Passowrd errata'}, 400
 
@@ -641,7 +644,4 @@ if __name__ == '__main__':
     thread = Thread(target = scheduleNotification, args = ())
     thread.daemon = True
     thread.start()
-    thread2 = Thread(target = populate, args = (60, bcrypt))
-    thread2.daemon = True
-    thread2.start()
     app.run() #casa
