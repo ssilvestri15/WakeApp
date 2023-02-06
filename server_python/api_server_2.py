@@ -22,8 +22,6 @@ from video_emotion_recognition import analyzeVideo
 from convert_wavs import convert_audio
 import json
 from datetime import datetime
-from script import populate
-from deepface import deepface
 
 def scheduleTime(isVideo):
     minuteI = random.randint(0, 59)
