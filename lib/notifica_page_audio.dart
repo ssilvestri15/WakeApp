@@ -23,17 +23,17 @@ class _NotificaPageAudioState extends State<NotificaPageAudio>{
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.center,
             children:  [
-              Image(
+              const Image(
                 width: 269,
                 image: AssetImage('assets/images/audioN.png'),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 300,
                 child: Text('Leggi il breve testo. Quando sei pronto clicca sul pulsante "Inizia".',
                   //overflow: TextOverflow.clip,
                   style: TextStyle(
                     fontSize: 20,
-                    fontWeight:FontWeight.normal,
+                    fontWeight:FontWeight.w700,
                     decoration: TextDecoration.none,
                     color: Color.fromRGBO(81, 48, 14, 1),
                   ),
