@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const String URL = 'https://f82bf231ae7d7f.lhr.life';
+const String URL = 'http://172.20.10.3:5000';
 
 Future<bool> doLogin(String email, String password) async {
   try {
