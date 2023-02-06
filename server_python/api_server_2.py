@@ -4,7 +4,7 @@ import uuid
 from sqlalchemy import select, insert, exc
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
-from flask import Flask, request
+from flask import Flask, request, send_file
 from flask_restful import Resource, Api
 from flask_jwt_extended import JWTManager, create_access_token, decode_token
 from flask_bcrypt import Bcrypt
@@ -98,7 +98,11 @@ class Notification(Resource):
 
         return {'message': 'Notifica inviata correttamente'}
         
-
+def getAudioById(audio_id):
+    try:
+        return session.query(models.Audioc).filter(models.Audioc.idaudio == audio_id).first()
+    except:
+        return False
 
 class AudioDetails(Resource):
     def get(self):
@@ -112,20 +116,21 @@ class AudioDetails(Resource):
         if user.tipo != 1:
             return {'message' : 'Non sei autorizzato'}, 400
 
-        user_to_check = request.args.get('user_id')
-        if not user_to_check or not isinstance(user_to_check, str):
-            return {'message': 'Richiesta non valida'}
-
-        user_fetched = getUserById(user_to_check, False)
-        if not user_fetched:
-             return { 'message': "L'utente richiesto non esiste" }
-
         audio_to_check = request.args.get('audio_id')
         if not audio_to_check or not isinstance(audio_to_check, str):
             return {'message': 'Richiesta non valida'}
 
-        #audio = getUserAudioById(user_to_check, audio_to_check)
-        pass
+        audio = getAudioById(audio_to_check)
+
+        if not audio:
+            return { 'message' : 'Si è verificato un errore'}
+
+        name = os.path.basename(audio.path)
+        return send_file(
+         audio.path, 
+         mimetype="audio/wav", 
+         as_attachment=False, 
+         download_name=f"{name}.wav")
 
 class Audio(Resource):
     def post(self):
@@ -644,6 +649,7 @@ api.add_resource(Notification, "/api/notification")
 
 if __name__ == '__main__':
     #app.run(host="172.19.161.41")  #uni
+    #app.run(host="172.20.10.3") #matteo
     thread = Thread(target = scheduleNotification, args = ())
     thread.daemon = True
     thread.start()
