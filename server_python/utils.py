@@ -8,6 +8,8 @@ import librosa
 import numpy as np
 import pickle
 import os
+import base64
+
 from convert_wavs import convert_audio
 
 ALLOWED_EXTENSIONS_VIDEO = set(['mp4', 'mov', 'avi', 'flv', 'mkv', 'webm'])
@@ -57,27 +59,26 @@ def validate_register_input(email, password, cf, telefono, nome, cognome, data_d
 	return True
 
 def encrypt_file(key, filepath):
-	try:
-		fernet = Fernet(key)
-		
-		# opening the original file to encrypt
-		with open(filepath, 'rb') as file:
-			original = file.read()
+    try:
+        fernet = Fernet(key)
+        
+        # opening the original file to encrypt
+        with open(filepath, 'rb') as file:
+             original = file.read()
 
-		# encrypting the file
-		encrypted = fernet.encrypt(original)
-		file.close()
- 
-		# opening the file in write mode and
-		# writing the encrypted data
-		with open(filepath, 'wb') as encrypted_file:
-			encrypted_file.write(encrypted)
-		encrypted_file.close()
-
-		return True	
-	except Exception as e:
-		print(e)
-		return False
+        # encrypting the file
+        encrypted = fernet.encrypt(original)
+        file.close()
+        
+        # opening the file in write mode and
+	    # writing the encrypted data
+        with open(filepath, 'wb') as encrypted_file:
+            encrypted_file.write(encrypted)
+        encrypted_file.close()
+        return True
+    except Exception as e:
+        print(e)
+        return False
 
 def decrypt_video(key, filepath):
 	try:

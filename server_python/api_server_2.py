@@ -18,7 +18,7 @@ from firebase_admin import credentials, messaging
 import random
 from threading import Thread
 from speech_emotion_recognition import analyze
-from video_emotion_recognition import analyzeVideo
+from video_emotion_recognition import analyzeVideoThreaded, checkFace
 from convert_wavs import convert_audio
 import json
 from datetime import datetime
@@ -288,25 +288,25 @@ class Video(Resource):
             
             if not user:
                 return {'message' : 'Token non valido'}, 400
+            
+            print(f"Key: {user.key}")
 
             filename = videos.save(file, folder=str(user.idutente))
             filename = os.environ.get("UPLOADED_VIDEOS_DEST")+filename
-            if not encrypt_file(str(user.key), filename):
-                return { 'message':'Si è verificato un errore'}
 
-            emojiIA = analyzeVideo(filename)
+            if not checkFace(filename):
+                return { "error": "Viso non rilevato"}
+
             emojiUser = jsonT["emojiUser"]
 
-            # TODO
-            # Aggiungere una voce al video al db
             query = insert(models.Video.__table__).values(
                 data = str(datetime.today().strftime("%d/%m/%Y")),
                 durata = 120,
-                emozioneIA = emojiIA,
                 emozioneUtente = emojiUser,
                 ora = str(datetime.today().strftime("%d/%m/%Y")),
                 idUtente = user.idutente,
-                path = filename
+                path = filename,
+                status = "processing"
             )
 
             try:
@@ -314,14 +314,20 @@ class Video(Resource):
 
                 if (len(result.inserted_primary_key)) != 1:
                     return { 'message':'Ops, qualcosa è andato storto len'}, 400
+                
+                idvideo = result.inserted_primary_key[0]
+                
+                if not idvideo:
+                    return { 'message':'Ops, qualcosa è andato storto idvideo'}, 400
+                
+                thread = Thread(target=analyzeVideoThreaded, args=(filename, str(idvideo), user.key))
+                thread.start()
 
                 return {'message' : f'File successfully uploaded: {filename}'}, 201
             except Exception as e:
 
                 print(type(e))
-                if (isinstance(e, exc.SQLAlchemyError)):
-                    print(f"DB ERROR -> {e.__cause__}")
-
+                print(e)
                 return { 'message':'Ops, qualcosa è andato storto excpt'}, 400
 
         else:
@@ -638,7 +644,6 @@ api.add_resource(Notification, "/api/notification")
 
 if __name__ == '__main__':
     #app.run(host="172.19.161.41")  #uni
-    send_not(messaging, "È l'ora dell'audio!","Leggi un breve testo e dicci come ti senti 📖❤️")
     thread = Thread(target = scheduleNotification, args = ())
     thread.daemon = True
     thread.start()
