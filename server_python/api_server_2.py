@@ -241,6 +241,12 @@ class Audio(Resource):
         print(list)
 
         return list          
+    
+def getVideoById(video_id):
+    try:
+        return session.query(models.Video).filter(models.Video.idVideo == video_id).first()
+    except:
+        return False
 
 class VideoDetails(Resource):
     def get(self):
@@ -254,20 +260,21 @@ class VideoDetails(Resource):
         if user.tipo != 1:
             return {'message' : 'Non sei autorizzato'}, 400
 
-        user_to_check = request.args.get('user_id')
-        if not user_to_check or not isinstance(user_to_check, str):
-            return {'message': 'Richiesta non valida'}
-
-        user_fetched = getUserById(user_to_check, False)
-        if not user_fetched:
-             return { 'message': "L'utente richiesto non esiste" }
-
         video_to_check = request.args.get('video_id')
         if not video_to_check or not isinstance(video_to_check, str):
             return {'message': 'Richiesta non valida'}
 
-        #video = getUserVideoById(user_to_check, video_to_check)
-        pass
+        video = getVideoById(video_to_check)
+
+        if not video:
+            return { 'message' : 'Si è verificato un errore'}
+
+        name = os.path.basename(video.path)
+        return send_file(
+         video.path, 
+         mimetype="video/mp4", 
+         as_attachment=False, 
+         download_name=f"{name}.mp4")
 
 class Video(Resource):
     def post(self):
@@ -376,7 +383,7 @@ class Video(Resource):
           
 def getVideosByUserId(id):
     try:
-        query = select(models.Video).where(models.Video.idutente == id)
+        query = select(models.Video).where(models.Video.idUtente == id)
         result = session.execute(query).all()
         list = []
         for row in result:
