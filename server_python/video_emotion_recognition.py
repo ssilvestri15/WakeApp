@@ -74,12 +74,15 @@ def checkFace(filename):
         return False
     
 def rrmdir(path):
-    for entry in os.scandir(path):
-        if entry.is_dir():
-            rrmdir(entry)
-        else:
-            os.remove(entry)
-    os.rmdir(path)
+    try:
+        for entry in os.scandir(path):
+            if entry.is_dir():
+                rrmdir(entry)
+            else:
+                os.remove(entry)
+        os.rmdir(path)
+    except:
+        print(f"Errore nella rimozione di: {path}")
 
 def analyzeVideo(filename, idvideo, key_f):
     print("Start AI Video")
@@ -92,13 +95,6 @@ def analyzeVideo(filename, idvideo, key_f):
         y = f"frames_{base}"
         z = os.path.join(remove_text_after_last_delimiter(filename, "/"), y)
 
-        try:
-            if not os.path.exists(z):
-                os.makedirs(z)
-        except:
-            print("Error folder")
-
-
         # Read the video from specified path
         cam = cv2.VideoCapture(filename)
 
@@ -107,33 +103,36 @@ def analyzeVideo(filename, idvideo, key_f):
         emo = dict()
 
         while(True):
-      
-            # reading from frame
-            ret,frame = cam.read()
+            try:
+                # reading from frame
+                ret,frame = cam.read()
   
-            if ret:
-                # if video is still left continue creating images0
-                name = os.path.join(z,f"{str(currentframe)}.jpg")
-                print ('Creating...' + str(name))
+                if ret:
+                    # if video is still left continue creating images0
+                    name = os.path.join(z,f"{str(currentframe)}.jpg")
+                    print ('Creating...' + str(name))
   
-                # writing the extracted images
-                cv2.imwrite(name, frame)
+                    # writing the extracted images
+                    cv2.imwrite(name, frame)
   
-                # increasing counter so that it will
-                # show how many frames are created
-                currentframe += 1
+                    # increasing counter so that it will
+                    # show how many frames are created
+                    currentframe += 1
 
-                em = DeepFace.analyze(img_path = name, actions = ['emotion'])
+                    em = DeepFace.analyze(img_path = name, actions = ['emotion'])
 
-                y = em[0]['dominant_emotion']
+                    y = em[0]['dominant_emotion']
 
-                if y in emo:
-                    emo[y] += 1
+                    if y in emo:
+                        emo[y] += 1
+                    else:
+                        emo[y] = 1
+
                 else:
-                    emo[y] = 1
-
-            else:
-                break
+                    break
+            except:
+                print("Errore, skippo")
+                continue    
   
         # Release all space and windows once done
         cam.release()

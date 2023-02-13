@@ -22,6 +22,7 @@ from video_emotion_recognition import analyzeVideoThreaded, checkFace
 from convert_wavs import convert_audio
 import json
 from datetime import datetime
+import pytz
 
 def scheduleTime(isVideo):
     minuteI = random.randint(0, 59)
@@ -314,11 +315,14 @@ class Video(Resource):
 
             emojiUser = jsonT["emojiUser"]
 
+            tz = pytz.timezone('Europe/Rome')
+            datetimeRome = datetime.now(tz)
+
             query = insert(models.Video.__table__).values(
                 data = str(datetime.today().strftime("%d/%m/%Y")),
                 durata = 120,
                 emozioneUtente = emojiUser,
-                ora = str(datetime.today().strftime("%d/%m/%Y")),
+                ora = str(datetimeRome.strftime("%H:%M:%S")),
                 idUtente = user.idutente,
                 path = filename,
                 status = "processing"
