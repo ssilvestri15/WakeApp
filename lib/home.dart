@@ -188,7 +188,7 @@ class _HomeState extends State<Home> {
                           Spacer(),
                           ElevatedButton(
                             onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => NotificaPage()));
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => NotificaPageAudio()));
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color.fromRGBO(203, 80, 80, 1),

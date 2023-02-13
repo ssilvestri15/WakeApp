@@ -87,7 +87,7 @@ class _CameraPageState extends State<CameraPage> {
         color: Color.fromRGBO(255, 222, 232, 1),
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.only(top: 50, bottom: 50),
+            padding: const EdgeInsets.only(top: 50, bottom: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -115,15 +115,15 @@ class _CameraPageState extends State<CameraPage> {
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 50, right: 50),
+                  padding: const EdgeInsets.only(left: 70, right: 70),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
                     child: CameraPreview(_cameraController),
                   ),
                 ),
-                Text('$recordingTime',
+                Text(recordingTime,
                   overflow: TextOverflow.clip,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight:FontWeight.bold,
                     decoration: TextDecoration.none,
@@ -134,7 +134,7 @@ class _CameraPageState extends State<CameraPage> {
                   backgroundColor: Color.fromRGBO(235, 155, 121, 1),
                   child: Icon(
                     _isRecording ? Icons.stop : Icons.circle,
-                    size: 70,
+                    size: 60,
                     color: Color.fromRGBO(239, 222, 204, 1),
                   ),
                   onPressed: () => _recordVideo(),
