@@ -105,6 +105,7 @@ class _VideoPageState extends State<VideoPage> {
                           ),
                           ElevatedButton(
                             onPressed: () {
+                              _videoPlayerController.pause();
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(builder: (context) => InvioUmore(filePath: widget.filePath, isFromVideo: true,))
