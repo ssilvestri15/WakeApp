@@ -17,7 +17,7 @@ def remove_text_after_last_delimiter(s, delimiter):
 
 def createFinalDict(dict):
 
-    emotions = ["fear", "surprise", "neutral", "sad", "happy", "disgust", "angry", "neutral"]
+    emotions = ["fear", "surprise", "neutral", "sad", "happy", "disgust", "angry", "happy"]
     for emotion in emotions:
         if not emotion in dict:
             dict[emotion] = 0.0 

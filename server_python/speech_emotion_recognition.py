@@ -8,19 +8,19 @@ def analyze(filename):
     for k,v in result.items():
         match k:
             case 1.0:
-                newResult["neutrale"] = v
+                newResult["neutral"] = v
             case 2.0:
-                newResult["disgustato"] = v
+                newResult["disgust"] = v
             case 3.0:
-                newResult["felice"] = v
+                newResult["happy"] = v
             case 4.0:
-                newResult["inpaurito"] = v
+                newResult["fear"] = v
             case 5.0:
-                newResult["arrabbiato"] = v
+                newResult["angry"] = v
             case 6.0:
-                newResult["sorpreso"] = v
+                newResult["surprise"] = v
             case 7.0:
-                newResult["triste"] = v
+                newResult["sad"] = v
             case _:
                 print("NOT FOUND")
     return newResult

@@ -84,15 +84,18 @@ class Notification(Resource):
         if user.tipo != 1:
             return {'message' : 'Non sei autorizzato'}, 400
 
-        type = request.args.get('type')
-        title = request.args.get('title')
-        body = request.args.get('body')
+        type = request.form.get('type')
+        title = request.form.get('title')
+        body = request.form.get('body')
+
+        if not type:
+            return {'message':'Richiesta non valida'},400
 
         if not title and not body:
             if type == "Video":
-                send_not(messaging, "È l'ora di dirci come va","Registra un video e dicci come ti senti 📽️❤️")
+                send_not(messaging, "È l'ora del video!","Registra un video e dicci come ti senti 📽️❤️")
             else:
-                send_not(messaging, "È l'ora di dirci come va","Leggi un breve testo e dicci come ti senti 📖❤️")
+                send_not(messaging,"È l'ora dell'audio!","Leggi un breve testo e dicci come ti senti 📖❤️")
         else:
             send_not(messaging, title, body)
 
@@ -660,4 +663,5 @@ if __name__ == '__main__':
     thread = Thread(target = scheduleNotification, args = ())
     thread.daemon = True
     thread.start()
+    #send_not(messaging,"È l'ora dell'audio!","Leggi un breve testo e dicci come ti senti 📖❤️")
     app.run() #casa
