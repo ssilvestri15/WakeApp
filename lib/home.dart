@@ -37,7 +37,7 @@ class _HomeState extends State<Home> {
   void _handleMessage(RemoteMessage message) {
     var title = message.notification?.title ?? '';
     if (title.contains('video')) {
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>NotificaPage()));
+      Navigator.pushNamed(context, 'notificaVideo');
     } else {
       Navigator.push(context, MaterialPageRoute(builder: (context)=>NotificaPageAudio()));
     }
@@ -74,6 +74,40 @@ class _HomeState extends State<Home> {
      });
   }
 
+  void inputNewUrl() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        String inputText = '';
+        return AlertDialog(
+          title: Text('Enter Text'),
+          content: TextField(
+            onChanged: (value) {
+              inputText = value;
+            },
+          ),
+          actions: [
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('OK'),
+              onPressed: () async {
+                // do something with the input text
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.setString('URL', inputText);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -93,9 +127,13 @@ class _HomeState extends State<Home> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-               const Padding(
-                  padding: EdgeInsets.only(bottom: 50),
-                 child: Image(image: AssetImage('assets/images/gatto.png'), width: 243),
+              Padding(padding: EdgeInsets.only(bottom: 50),
+                 child: GestureDetector(
+                     onLongPress: () {
+                       inputNewUrl();
+                    },
+                    child: Image(image: AssetImage('assets/images/gatto.png'), width: 243),
+                 ),
                ),
               Visibility(
                 visible: !_isVideoNotificationSend && !_isAudioNotificationSend,
@@ -142,7 +180,7 @@ class _HomeState extends State<Home> {
                           Spacer(),
                           ElevatedButton(
                             onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => NotificaPage()));
+                              Navigator.pushNamed(context, 'notificaVideo');
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color.fromRGBO(203, 80, 80, 1),

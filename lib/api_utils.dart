@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const String URL = 'https://5d213b270cb45b.lhr.life';
+String URL = 'https://5d213b270cb45b.lhr.life';
 
 Future<bool> doLogin(String email, String password) async {
   try {
@@ -42,9 +42,14 @@ Future<bool> doLogin(String email, String password) async {
 
 }
 
-Future<bool> uploadVideo(String filePath, String emojiUser) async {
+Future<int> uploadVideo(String filePath, String emojiUser) async {
   SharedPreferences pref = await SharedPreferences.getInstance();
   var token = pref.getString('token');
+
+  var newURL = pref.getString('URL');
+  if(newURL != null){
+    URL = newURL;
+  }
 
   token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY3NTM1NjE0MCwianRpIjoiZTg2ZmU1OTMtNGFhMy00YTBiLWE1YjItNWIxYTcwNWY0MGI1IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6Im1hdXJvLnZlcmRvbmVAZ21haWwuY29tIiwibmJmIjoxNjc1MzU2MTQwfQ.auis5YnIgdN42OzZp1P4Xzabbm2K8pRVLR6EO33yanQ';
 
@@ -68,9 +73,9 @@ Future<bool> uploadVideo(String filePath, String emojiUser) async {
     print(response.statusCode);
     print(await response.stream.bytesToString());
 
-    return response.statusCode == 201;
+    return response.statusCode;
   } catch (e) {
-    return false;
+    return 400;
   }
 
 }
@@ -78,6 +83,11 @@ Future<bool> uploadVideo(String filePath, String emojiUser) async {
 Future<bool> uploadAudio(String filePath, String emojiUser) async {
   SharedPreferences pref = await SharedPreferences.getInstance();
   var token = pref.getString('token');
+
+  var newURL = pref.getString('URL');
+  if(newURL != null){
+    URL = newURL;
+  }
 
   token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY3NTM1NjE0MCwianRpIjoiZTg2ZmU1OTMtNGFhMy00YTBiLWE1YjItNWIxYTcwNWY0MGI1IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6Im1hdXJvLnZlcmRvbmVAZ21haWwuY29tIiwibmJmIjoxNjc1MzU2MTQwfQ.auis5YnIgdN42OzZp1P4Xzabbm2K8pRVLR6EO33yanQ';
 

@@ -297,21 +297,50 @@ class _InvioUmoreState extends State<InvioUmore>{
                             });
                             print(widget.isFromVideo);
                             if(widget.isFromVideo){
-                              uploadVideo(widget.filePath, emojiSelezionata).then((value) {
-                                if (value) {
+                              uploadVideo(widget.filePath, emojiSelezionata).then((statusCode) {
+                                switch(statusCode) {
+                                  case 201: case 200:
                                   //success
-                                  removeVideoNotification();
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => EndPage())
-                                  );
-                                } else {
-                                  setState(() {
-                                    isSending = false;
-                                  });
-                                  showDialog(context: context, builder: (context) => const AlertDialog(
-                                    title: Text("Error"),
-                                  ));
+                                    removeVideoNotification();
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => EndPage())
+                                    );
+                                    break;
+
+                                  case 420:
+                                    //no face
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text('Attenzione! Viso nel video non rilevato! Riprova per favore.'),
+                                          actions: [
+                                            TextButton(
+                                              child: Text('OK'),
+                                              onPressed: () async {
+                                                // do something with the input text
+                                                setState(() {
+                                                  isSending = false;
+                                                });
+                                                // navigate to a new page and remove all other pages from the stack
+                                                Navigator.pushNamedAndRemoveUntil(context, 'notificaVideo', (route) => false);
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                    break;
+
+                                  default:
+                                    //error
+                                    setState(() {
+                                      isSending = false;
+                                    });
+                                    showDialog(context: context, builder: (context) => const AlertDialog(
+                                      title: Text("Error"),
+                                    ));
                                 }
                               });
                             } else {

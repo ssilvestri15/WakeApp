@@ -35,8 +35,6 @@ Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //prefs.remove('videoBackgroundNotification');
-  //prefs.remove('audioBackgroundNotification');
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -68,6 +66,7 @@ Future<void> main() async {
     home: const Home(),
     routes: {
       'login': (context) => const Login(),
+      'notificaVideo': (context) => NotificaPage(),
     },
   ));
 
