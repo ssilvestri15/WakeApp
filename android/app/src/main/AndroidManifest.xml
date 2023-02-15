@@ -3,7 +3,7 @@
    <application
         android:label="wakeapp"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/icona">
         <activity
             android:name=".MainActivity"
             android:exported="true"

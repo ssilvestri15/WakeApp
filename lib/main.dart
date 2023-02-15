@@ -63,7 +63,7 @@ Future<void> main() async {
       primaryColor: const Color.fromRGBO(81, 48, 14, 1),
       fontFamily: 'Montserrat'
     ),
-    home: const NotificaPageAudio(),
+    home: const Home(),
     routes: {
       'login': (context) => const Login(),
       'notificaVideo': (context) => NotificaPage(),
