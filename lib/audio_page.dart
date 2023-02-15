@@ -189,7 +189,7 @@ class _AudioPageState extends State<AudioPage>{
     Widget makeBody() {
       return
         Padding(
-          padding: const EdgeInsets.only(top: 80, bottom: 80),
+          padding: const EdgeInsets.only(top: 50, bottom: 30),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -199,13 +199,13 @@ class _AudioPageState extends State<AudioPage>{
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: const [
                   Image(
-                    width: 220,
+                    width: 200,
                     image: AssetImage('assets/images/audio.png'),
                   )
                 ],
               ),
               SizedBox(
-                width: 380,
+                width: 350,
                 height: 300,
                 child: SingleChildScrollView(
                   scrollDirection: Axis.vertical,
