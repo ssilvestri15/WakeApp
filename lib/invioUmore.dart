@@ -42,7 +42,7 @@ class _InvioUmoreState extends State<InvioUmore>{
     return Scaffold(
       backgroundColor: const Color.fromRGBO(226, 214, 255, 1),
       body:Padding(
-        padding: const EdgeInsets.only(bottom: 30, top: 30),
+        padding: const EdgeInsets.only(bottom: 25, top: 25),
         child: Container(
           alignment: Alignment.center,
           child: Column(

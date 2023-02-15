@@ -1,6 +1,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wakeapp/audio_page.dart';
 import 'package:wakeapp/camera_page.dart';
 
@@ -11,6 +12,40 @@ class NotificaPageAudio extends StatefulWidget{
 }
 
 class _NotificaPageAudioState extends State<NotificaPageAudio>{
+
+  void inputNewUrl() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        String inputText = '';
+        return AlertDialog(
+          title: Text('Enter Text'),
+          content: TextField(
+            onChanged: (value) {
+              inputText = value;
+            },
+          ),
+          actions: [
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('OK'),
+              onPressed: () async {
+                // do something with the input text
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.setString('URL', inputText);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +58,14 @@ class _NotificaPageAudioState extends State<NotificaPageAudio>{
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.center,
             children:  [
-              const Image(
-                width: 269,
-                image: AssetImage('assets/images/audioN.png'),
+              GestureDetector(
+                onLongPress: () {
+                  inputNewUrl();
+                },
+                child: const Image(
+                  width: 269,
+                  image: AssetImage('assets/images/audioN.png'),
+                ),
               ),
               const SizedBox(
                 width: 300,

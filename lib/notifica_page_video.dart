@@ -1,6 +1,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wakeapp/camera_page.dart';
 
 class NotificaPage extends StatefulWidget{
@@ -10,6 +11,40 @@ class NotificaPage extends StatefulWidget{
 }
 
 class _NotificaPageState extends State<NotificaPage>{
+
+  void inputNewUrl() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        String inputText = '';
+        return AlertDialog(
+          title: Text('Enter Text'),
+          content: TextField(
+            onChanged: (value) {
+              inputText = value;
+            },
+          ),
+          actions: [
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('OK'),
+              onPressed: () async {
+                // do something with the input text
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.setString('URL', inputText);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,11 +57,16 @@ class _NotificaPageState extends State<NotificaPage>{
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.center,
             children:  [
-              Image(
-                width: 269,
-                image: AssetImage('assets/images/pc.png'),
+              GestureDetector(
+              onLongPress: () {
+                inputNewUrl();
+                },
+                child: const Image(
+                  width: 269,
+                  image: AssetImage('assets/images/pc.png'),
+                ),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 300,
                 child: Text('Registra un breve video di due minuti. Quando sei pronto clicca su “Inizia”',
                   //overflow: TextOverflow.clip,
